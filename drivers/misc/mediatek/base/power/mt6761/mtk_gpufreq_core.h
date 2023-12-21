@@ -33,11 +33,11 @@
 /**************************************************
  * MT6762M segment_1 : GPU DVFS OPP table Setting
  **************************************************/
-#define SEG1_GPU_DVFS_FREQ0			(376000)/* KHz */
+#define SEG1_GPU_DVFS_FREQ0			(900000)/* KHz */
 
-#define SEG1_GPU_DVFS_VOLT0			(65000)	/* mV x 100 */
+#define SEG1_GPU_DVFS_VOLT0			(90500)	/* mV x 100 */
 
-#define SEG1_GPU_DVFS_VSRAM0			(87500)/* mV x 100 */
+#define SEG1_GPU_DVFS_VSRAM0			(98500)/* mV x 100 */
 
 /**************************************************
  * MT6762 segment_2 : GPU DVFS OPP table Setting
