@@ -35,7 +35,11 @@ Optional property for different chips:
 	       Required elements: "grf"
 
 For the below properties, please refer to Analogix DP binding document:
+<<<<<<< HEAD
  * Documentation/devicetree/bindings/display/bridge/analogix_dp.txt
+=======
+ * Documentation/devicetree/bindings/drm/bridge/analogix_dp.txt
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 - phys (required)
 - phy-names (required)
 - hpd-gpios (optional)

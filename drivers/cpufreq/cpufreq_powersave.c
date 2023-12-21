@@ -25,7 +25,7 @@ static void cpufreq_gov_powersave_limits(struct cpufreq_policy *policy)
 #ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_POWERSAVE
 static
 #endif
-struct cpufreq_governor cpufreq_gov_powersave = {
+static struct cpufreq_governor cpufreq_gov_powersave = {
 	.name		= "powersave",
 	.limits		= cpufreq_gov_powersave_limits,
 	.owner		= THIS_MODULE,

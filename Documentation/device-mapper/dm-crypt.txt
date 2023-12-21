@@ -76,6 +76,7 @@ submit_from_crypt_cpus
     thread because it benefits CFQ to have writes submitted using the
     same context.
 
+<<<<<<< HEAD
 sector_size:<bytes>
     Use <bytes> as the encryption unit instead of 512 bytes sectors.
     This option can be in range 512 - 4096 bytes and must be power of two.
@@ -90,6 +91,8 @@ iv_large_sectors
    The <iv_offset> must be multiple of <sector_size> (in 512 bytes units)
    if this flag is specified.
 
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 Example scripts
 ===============
 LUKS (Linux Unified Key Setup) is now the preferred way to set up disk

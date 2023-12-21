@@ -50,6 +50,7 @@
 #define I2C_FS_START_CON		0x1800
 #define I2C_TIME_CLR_VALUE		0x0000
 #define I2C_TIME_DEFAULT_VALUE		0x0003
+#define I2C_FS_TIME_INIT_VALUE		0x1303
 #define I2C_WRRD_TRANAC_VALUE		0x0002
 #define I2C_RD_TRANAC_VALUE		0x0001
 
@@ -333,19 +334,22 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
  * less than or equal to i2c->speed_hz. The calculation try to get
  * sample_cnt and step_cn
  */
-static int mtk_i2c_calculate_speed(struct mtk_i2c *i2c, unsigned int clk_src,
-				   unsigned int target_speed,
-				   unsigned int *timing_step_cnt,
-				   unsigned int *timing_sample_cnt)
+static int mtk_i2c_set_speed(struct mtk_i2c *i2c, unsigned int parent_clk,
+			     unsigned int clock_div)
 {
+	unsigned int clk_src;
 	unsigned int step_cnt;
 	unsigned int sample_cnt;
 	unsigned int max_step_cnt;
+	unsigned int target_speed;
 	unsigned int base_sample_cnt = MAX_SAMPLE_CNT_DIV;
 	unsigned int base_step_cnt;
 	unsigned int opt_div;
 	unsigned int best_mul;
 	unsigned int cnt_mul;
+
+	clk_src = parent_clk / clock_div;
+	target_speed = i2c->speed_hz;
 
 	if (target_speed > MAX_HS_MODE_SPEED)
 		target_speed = MAX_HS_MODE_SPEED;
@@ -730,7 +734,8 @@ static const struct i2c_algorithm mtk_i2c_algorithm = {
 	.functionality = mtk_i2c_functionality,
 };
 
-static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
+static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c,
+			    unsigned int *clk_src_div)
 {
 	int ret;
 
@@ -758,12 +763,17 @@ static int mtk_i2c_probe(struct platform_device *pdev)
 	int ret = 0;
 	struct mtk_i2c *i2c;
 	struct clk *clk;
+	unsigned int clk_src_div;
 	struct resource *res;
 	int irq;
 
 	i2c = devm_kzalloc(&pdev->dev, sizeof(*i2c), GFP_KERNEL);
 	if (!i2c)
 		return -ENOMEM;
+
+	ret = mtk_i2c_parse_dt(pdev->dev.of_node, i2c, &clk_src_div);
+	if (ret)
+		return -EINVAL;
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 	i2c->base = devm_ioremap_resource(&pdev->dev, res);
@@ -829,7 +839,7 @@ static int mtk_i2c_probe(struct platform_device *pdev)
 
 	strlcpy(i2c->adap.name, I2C_DRV_NAME, sizeof(i2c->adap.name));
 
-	ret = mtk_i2c_set_speed(i2c, clk_get_rate(clk));
+	ret = mtk_i2c_set_speed(i2c, clk_get_rate(clk), clk_src_div);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to set the speed.\n");
 		return -EINVAL;
@@ -894,7 +904,7 @@ static int mtk_i2c_resume(struct device *dev)
 	mtk_i2c_init_hw(i2c);
 
 	mtk_i2c_clock_disable(i2c);
-
+y
 	return 0;
 }
 #endif

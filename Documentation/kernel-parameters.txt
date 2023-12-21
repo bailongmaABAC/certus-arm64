@@ -87,7 +87,10 @@ parameter is applicable:
 	BLACKFIN Blackfin architecture is enabled.
 	CLK	Common clock infrastructure is enabled.
 	CMA	Contiguous Memory Area support is enabled.
+<<<<<<< HEAD
 	DM	Device mapper support is enabled.
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 	DRM	Direct Rendering Management support is enabled.
 	DYNAMIC_DEBUG Build in debug messages and enable them at runtime
 	EDD	BIOS Enhanced Disk Drive Services (EDD) is enabled
@@ -1035,11 +1038,14 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 
 	dis_ucode_ldr	[X86] Disable the microcode loader.
 
+<<<<<<< HEAD
 	dm=		[DM] Allows early creation of a device-mapper device.
 			See Documentation/device-mapper/boot.txt.
 
 	dmasound=	[HW,OSS] Sound subsystem buff
 
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 	dma_debug=off	If the kernel is compiled with DMA_API_DEBUG support,
 			this option disables the debugging code at boot.
 
@@ -1902,12 +1908,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			kernel and module base offset ASLR (Address Space
 			Layout Randomization).
 
+<<<<<<< HEAD
 	kasan_multi_shot
 			[KNL] Enforce KASAN (Kernel Address Sanitizer) to print
 			report on every invalid memory access. Without this
 			parameter KASAN will print report only for the first
 			invalid access.
 
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 	keepinitrd	[HW,ARM]
 
 	kernelcore=	[KNL,X86,IA-64,PPC]
@@ -2377,6 +2386,15 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				     SMT on vulnerable CPUs
 			off        - Unconditionally disable MDS mitigation
 
+<<<<<<< HEAD
+=======
+			On TAA-affected machines, mds=off can be prevented by
+			an active TAA mitigation as both vulnerabilities are
+			mitigated with the same mechanism so in order to disable
+			this mitigation, you need to specify tsx_async_abort=off
+			too.
+
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 			Not specifying this option is equivalent to
 			mds=full.
 
@@ -3492,10 +3510,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			before loading.
 			See Documentation/blockdev/ramdisk.txt.
 
+<<<<<<< HEAD
 	psi=		[KNL] Enable or disable pressure stall information
 			tracking.
 			Format: <bool>
 
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 	psmouse.proto=	[HW,MOUSE] Highest PS2 mouse protocol extension to
 			probe for; one of (bare|imps|exps|lifebook|any).
 	psmouse.rate=	[HW,MOUSE] Set desired mouse report rate, in reports
@@ -4083,6 +4104,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			last alloc / free. For more information see
 			Documentation/vm/slub.txt.
 
+<<<<<<< HEAD
 	slub_memcg_sysfs=       [MM, SLUB]
 			Determines whether to enable sysfs directories for
 			memory cgroup sub-caches. 1 to enable, 0 to disable.
@@ -4091,6 +4113,8 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 			directories and files being created under
 			/sys/kernel/slub.
 
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 	slub_max_order= [MM, SLUB]
 			Determines the maximum allowed order for slabs.
 			A high setting may cause OOMs due to memory
@@ -4623,6 +4647,14 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
 				     vulnerable to cross-thread TAA attacks.
 			off        - Unconditionally disable TAA mitigation
 
+<<<<<<< HEAD
+=======
+			On MDS-affected machines, tsx_async_abort=off can be
+			prevented by an active MDS mitigation as both vulnerabilities
+			are mitigated with the same mechanism so in order to disable
+			this mitigation, you need to specify mds=off too.
+
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 			Not specifying this option is equivalent to
 			tsx_async_abort=full.  On CPUs which are MDS affected
 			and deploy MDS mitigation, TAA mitigation is not

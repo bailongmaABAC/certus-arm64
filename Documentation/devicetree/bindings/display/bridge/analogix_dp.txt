@@ -33,7 +33,11 @@ Optional properties for dp-controller:
 		in Documentation/devicetree/bindings/media/video-interfaces.txt,
 		please refer to the SoC specific binding document:
 		* Documentation/devicetree/bindings/display/exynos/exynos_dp.txt
+<<<<<<< HEAD
 		* Documentation/devicetree/bindings/display/rockchip/analogix_dp-rockchip.txt
+=======
+		* Documentation/devicetree/bindings/video/analogix_dp-rockchip.txt
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 
 [1]: Documentation/devicetree/bindings/media/video-interfaces.txt
 -------------------------------------------------------------------------------

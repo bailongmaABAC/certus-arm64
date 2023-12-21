@@ -156,7 +156,10 @@ lacie	LaCie
 lantiq	Lantiq Semiconductor
 lenovo	Lenovo Group Ltd.
 lg	LG Corporation
+<<<<<<< HEAD
 linaro	Linaro Limited
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 linux	Linux-specific binding
 lltc	Linear Technology Corporation
 lsi	LSI Corp. (LSI Logic)
@@ -171,7 +174,10 @@ micrel	Micrel Inc.
 microchip	Microchip Technology Inc.
 microcrystal	Micro Crystal AG
 micron	Micron Technology Inc.
+<<<<<<< HEAD
 microtrust	Microtrust INC.
+=======
+>>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 minix	MINIX Technology Ltd.
 mitsubishi	Mitsubishi Electric Corporation
 mosaixtech	Mosaix Technologies, Inc.

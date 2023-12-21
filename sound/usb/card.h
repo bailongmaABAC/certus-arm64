@@ -84,6 +84,7 @@ struct snd_usb_endpoint {
 	char *databuf;			/* data buffer for all sync URBs */
 	dma_addr_t data_dma;		/* DMA address of data */
 	int databuf_sram;		/* data buffer on sram */
+
 	unsigned int pipe;		/* the data i/o pipe */
 	unsigned int freqn;		/* nominal sampling rate in fs/fps in Q16.16 format */
 	unsigned int freqm;		/* momentary sampling rate in fs/fps in Q16.16 format */

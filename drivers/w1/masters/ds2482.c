@@ -111,7 +111,7 @@ static const struct i2c_device_id ds2482_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, ds2482_id);
 
-static const struct dev_pm_ops ds2482_pm_ops = {
+static struct dev_pm_ops ds2482_pm_ops = {
 	.suspend = ds2482_suspend,
 	.resume = ds2482_resume,
 };
@@ -599,7 +599,6 @@ static int ds2482_remove(struct i2c_client *client)
 		gpio_set_value(data->slpz_gpio, 0);
 		gpio_free(data->slpz_gpio);
 	}
-
 	/* Free the memory */
 	kfree(data);
 	return 0;

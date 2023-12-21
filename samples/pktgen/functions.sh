@@ -5,6 +5,8 @@
 # Author: Jesper Dangaaard Brouer
 # License: GPL
 
+set -o errexit
+
 ## -- General shell logging cmds --
 function err() {
     local exitcode=$1
@@ -58,6 +60,7 @@ function pg_set() {
 function proc_cmd() {
     local result
     local proc_file=$1
+    local status=0
     # after shift, the remaining args are contained in $@
     shift
     local proc_ctrl=${PROC_DIR}/$proc_file
@@ -104,6 +107,8 @@ function pgset() {
 	err 5 "Write error($status) occurred cmd: \"$1 > $PGDEV\""
     fi
 }
+
+[[ $EUID -eq 0 ]] && trap 'pg_ctrl "reset"' EXIT
 
 ## -- General shell tricks --
 

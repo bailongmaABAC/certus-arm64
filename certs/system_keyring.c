@@ -284,3 +284,4 @@ int verify_signature_one(const struct public_key_signature *sig,
 }
 EXPORT_SYMBOL_GPL(verify_signature_one);
 
+#endif /* CONFIG_SYSTEM_DATA_VERIFICATION */

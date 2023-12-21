@@ -225,7 +225,7 @@ int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
 	}
 
 	/* Take note of the planned idle state. */
-	sched_idle_set_state(target_state, index);
+	sched_idle_set_state(target_state);
 
 	trace_cpu_idle_rcuidle(index, dev->cpu);
 	time_start = ns_to_ktime(local_clock());
@@ -238,7 +238,7 @@ int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
 	trace_cpu_idle_rcuidle(PWR_EVENT_EXIT, dev->cpu);
 
 	/* The cpu is no longer idle or about to enter idle. */
-	sched_idle_set_state(NULL, -1);
+	sched_idle_set_state(NULL);
 
 	if (broadcast) {
 		if (WARN_ON_ONCE(!irqs_disabled()))
@@ -661,8 +661,7 @@ static int cpuidle_latency_notify(struct notifier_block *b,
 	 * when PM_QoS CPU_DMA_LATENCY is updated
 	 */
 /*	wake_up_all_idle_cpus(); */
-	wake_up_avail_idle_cpus();
-
+	wake_up_all_idle_cpus();
 	return NOTIFY_OK;
 }
 

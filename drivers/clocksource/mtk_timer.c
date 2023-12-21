@@ -76,6 +76,14 @@ struct mtk_clock_event_device {
 	bool clk32k_exist;
 	struct clock_event_device dev;
 };
+
+static void __iomem *gpt_sched_reg __read_mostly;
+
+static u64 notrace mtk_read_sched_clock(void)
+{
+        return readl_relaxed(gpt_sched_reg);
+}
+
 static struct mtk_clock_event_device *gpt_devs;
 
 static inline struct mtk_clock_event_device *to_mtk_clk(
@@ -252,6 +260,7 @@ static int mtk_clkevt_next_event(unsigned long event,
 #if defined(CONFIG_MTK_TIMER_AEE_DUMP)
 	gpt_clkevt_last_setting_next_event_time = sched_clock();
 #endif
+
 	return 0;
 }
 

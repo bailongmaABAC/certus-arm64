@@ -1059,7 +1059,7 @@ static int loop_clr_fd(struct loop_device *lo)
 	memset(lo->lo_encrypt_key, 0, LO_KEY_SIZE);
 	memset(lo->lo_crypt_name, 0, LO_NAME_SIZE);
 	memset(lo->lo_file_name, 0, LO_NAME_SIZE);
-	blk_queue_logical_block_size(lo->lo_queue, 512);
+	blk_queue_logical_block_size(lo->lo_queue, 1024);
 	if (bdev) {
 		bdput(bdev);
 		invalidate_bdev(bdev);
