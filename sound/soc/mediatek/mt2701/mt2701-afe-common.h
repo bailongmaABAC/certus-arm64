@@ -342,12 +342,6 @@ struct mt2701_afe_private {
 	struct mt2701_tdm_coclk_info tdm_coclk_info;
 	struct tdm_in_lrck_setting tdm_in_lrck;
 	struct clock_ctrl *clk_ctrl;
-struct mt2701_i2s_path {
-	int dai_id;
-	int mclk_rate;
-	int on[I2S_DIR_NUM];
-	int occupied[I2S_DIR_NUM];
-	const struct mt2701_i2s_data *i2s_data[2];
 };
 
 #endif

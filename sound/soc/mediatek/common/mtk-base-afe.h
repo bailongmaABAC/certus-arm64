@@ -82,7 +82,6 @@ struct regmap;
 struct snd_pcm_substream;
 struct snd_soc_dai;
 struct snd_soc_dai_driver;
-};
 
 struct mtk_base_afe {
 	void __iomem *base_addr;

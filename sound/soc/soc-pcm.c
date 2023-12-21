@@ -2873,7 +2873,6 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
 	unsigned long flags;
 
 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-
 	list_for_each_entry(dpcm, &be->dpcm[stream].fe_clients, list_fe) {
 
 		if (dpcm->fe == fe)
@@ -2907,7 +2906,6 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
 	unsigned long flags;
 
 	spin_lock_irqsave(&fe->card->dpcm_lock, flags);
-
 	list_for_each_entry(dpcm, &be->dpcm[stream].fe_clients, list_fe) {
 
 		if (dpcm->fe == fe)

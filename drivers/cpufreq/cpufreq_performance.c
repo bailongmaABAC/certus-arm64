@@ -25,7 +25,7 @@ static void cpufreq_gov_performance_limits(struct cpufreq_policy *policy)
 #ifdef CONFIG_CPU_FREQ_GOV_PERFORMANCE_MODULE
 static
 #endif
-static struct cpufreq_governor cpufreq_gov_performance = {
+struct cpufreq_governor cpufreq_gov_performance = {
 	.name		= "performance",
 	.owner		= THIS_MODULE,
 	.limits		= cpufreq_gov_performance_limits,

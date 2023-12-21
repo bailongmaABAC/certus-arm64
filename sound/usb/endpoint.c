@@ -485,7 +485,7 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
 		}
 	}
 
-	usb_audio_dbg(chip, "Creating new %s %s endpoint #%x\n",
+	usb_audio_info(chip, "Creating new %s %s endpoint #%x\n",
 		    is_playback ? "playback" : "capture",
 		    type == SND_USB_ENDPOINT_TYPE_DATA ? "data" : "sync",
 		    ep_num);
