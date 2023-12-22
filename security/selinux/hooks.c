@@ -190,7 +190,7 @@ static void cred_init_security(void)
 /*
  * get the security ID of a set of credentials
  */
- u32 cred_sid(const struct cred *cred)
+ static inline u32 cred_sid(const struct cred *cred)
 {
 	const struct task_security_struct *tsec;
 
@@ -214,7 +214,7 @@ static inline u32 task_sid(const struct task_struct *task)
 /*
  * get the subjective security ID of the current task
  */
-static inline u32 current_sid(void)
+u32 current_sid(void)
 {
 	const struct task_security_struct *tsec = current_security();
 
