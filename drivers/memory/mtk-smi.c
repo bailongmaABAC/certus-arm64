@@ -127,7 +127,6 @@ int mtk_smi_dev_enable(struct mtk_smi_dev *smi)
 	if (ret)
 		for (j = i - 1; j >= 0; j--)
 			clk_disable_unprepare(smi->clks[j]);
-	/* add one for reference counts */
 	atomic_inc(&(smi->clk_ref_cnts));
 	return ret;
 }
@@ -146,11 +145,10 @@ int mtk_smi_dev_disable(struct mtk_smi_dev *smi)
 			smi->index);
 		return -ENXIO;
 	}
+	atomic_dec(&(smi->clk_ref_cnts));
 	/* disable clocks without mtcmos */
 	for (i = smi->nr_clks - 1; i >= 1; i--)
 		clk_disable_unprepare(smi->clks[i]);
-	/* sub one for reference counts */
-	atomic_dec(&(smi->clk_ref_cnts));
 	return 0;
 }
 EXPORT_SYMBOL_GPL(mtk_smi_dev_disable);
@@ -175,9 +173,8 @@ static int mtk_smi_clks_get(struct mtk_smi_dev *smi)
 	if (nr_clks <= 0)
 		return 0;
 	smi->nr_clks = nr_clks;
-#if IS_ENABLED(CONFIG_MACH_MT6758) || IS_ENABLED(CONFIG_MACH_MT6763) \
-	|| IS_ENABLED(CONFIG_MACH_MT6765)
-	/* workaround for mmdvfs at mt6758/mt6763/mt6765 */
+#if IS_ENABLED(CONFIG_MACH_MT6758) || IS_ENABLED(CONFIG_MACH_MT6765)
+	/* workaround for mmdvfs at mt6758/mt6765 */
 	if (smi->index == common->index)
 		smi->nr_clks = 4;
 #endif
@@ -230,7 +227,7 @@ int mtk_smi_config_set(struct mtk_smi_dev *smi, const unsigned int scen_indx)
 			smi->index, scen_indx, smi->nr_scens);
 		return -EINVAL;
 	} else if (!mtk_smi_clk_ref_cnts_read(smi)) {
-		dev_info(smi->dev, "%s %d without mtcmos\n",
+		dev_dbg(smi->dev, "%s %d without mtcmos\n",
 			smi->index == common->index ? "common" : "larb",
 			smi->index);
 		return ret;
@@ -524,7 +521,7 @@ static int mtk_smi_larb_probe(struct platform_device *pdev)
 {
 #if IS_ENABLED(CONFIG_MTK_SMI_EXT)
 	struct resource	*res;
-	unsigned int	index = 0;
+	unsigned int	index;
 	int		ret;
 	/* check parameter */
 	if (!pdev) {
@@ -534,7 +531,8 @@ static int mtk_smi_larb_probe(struct platform_device *pdev)
 	/* index */
 	ret = of_property_read_u32(pdev->dev.of_node, "cell-index", &index);
 	if (ret) {
-		dev_notice(&pdev->dev, "cell-index read failed %d\n", ret);
+		dev_notice(&pdev->dev, "larb index %d read failed %d\n",
+			index, ret);
 		return ret;
 	}
 	/* dev */
@@ -663,7 +661,7 @@ static int mtk_smi_common_probe(struct platform_device *pdev)
 {
 #if IS_ENABLED(CONFIG_MTK_SMI_EXT)
 	struct resource	*res;
-	unsigned int	nr_larbs = 0;
+	unsigned int	nr_larbs;
 	int		ret;
 	/* check parameter */
 	if (!pdev) {
@@ -678,7 +676,8 @@ static int mtk_smi_common_probe(struct platform_device *pdev)
 	/* index */
 	ret = of_property_read_u32(common->dev->of_node, "nr_larbs", &nr_larbs);
 	if (ret) {
-		dev_notice(&pdev->dev, "nr_larbs read failed %d\n", ret);
+		dev_notice(&pdev->dev, "common nr_larbs %d read failed %d\n",
+			nr_larbs, ret);
 		return ret;
 	}
 	common->index = nr_larbs;

@@ -35,16 +35,17 @@ struct stCAM_CAL_INFO_STRUCT {
 	u8 *pu1Params;
 };
 
-struct stCAM_CAL_DATAINFO_STRUCT {
+ 
+struct stCAM_CAL_DATAINFO_STRUCT{
 	u32 sensorID;
 	u32 deviceID; /* MAIN = 0x01, SUB  = 0x02, MAIN_2 = 0x04*/
 	u32 dataLength;
 	u32 sensorVendorid;
-	u8 vendorByte[4];
-	u8 *dataBuffer;
+	u8  vendorByte[4];
+	u8  *dataBuffer;
 };
 
-typedef enum {
+typedef enum{
 	MODULE_ITEM = 0,
 	AWB_ITEM,
 	SEGMENT_ITEM,
@@ -54,16 +55,17 @@ typedef enum {
 	DUALCAM_ITEM,
 	TOTAL_ITEM,
 	MAX_ITEM,
-} stCAM_CAL_CHECKSUM_ITEM;
+}stCAM_CAL_CHECKSUM_ITEM;
 
-struct stCAM_CAL_CHECKSUM_STRUCT {
+struct stCAM_CAL_CHECKSUM_STRUCT{
 	stCAM_CAL_CHECKSUM_ITEM item;
 	u32 flagAdrees;
 	u32 startAdress;
 	u32 endAdress;
 	u32 checksumAdress;
-	u8 validFlag;
+	u8  validFlag;
 };
+
 
 #ifdef CONFIG_COMPAT
 

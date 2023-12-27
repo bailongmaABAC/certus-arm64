@@ -44,6 +44,7 @@
 //#include <linux/wakelock.h>
 #include "focaltech_core.h"
 #include "./focaltech_test/focaltech_test.h"
+#include <linux/hardware_info.h>  
 
 /*****************************************************************************
 * Private constant and macro definitions using #define
@@ -105,6 +106,8 @@ static int tpd_def_calmat_local_factory[8] = TPD_CALIBRATION_MATRIX_ROTATION_FAC
 * Global variable or extern global variabls/functions
 *****************************************************************************/
 struct fts_ts_data *fts_data;
+static u8 vendor_id;
+static u8 ic_type;
 
 /*****************************************************************************
 * Static function prototypes
@@ -136,7 +139,47 @@ static struct i2c_driver tpd_i2c_driver = {
     .id_table = fts_tpd_id,
     .detect = tpd_i2c_detect,
 };
+#define OFILM_VENDOR     81
+#define TP_IC_FT5446   84
+#define LENS_VENDOR    109
 
+void hardwareinfo_set(void*drv_data)
+{
+	char firmware_ver[HARDWARE_MAX_ITEM_LONGTH];
+	char vendor_for_id[HARDWARE_MAX_ITEM_LONGTH];
+	char ic_name[HARDWARE_MAX_ITEM_LONGTH];
+	int err;
+	u8 fw_ver;
+
+	fts_i2c_read_reg(fts_data->client, FTS_REG_FW_VER, &fw_ver);
+#if 1	//for compatibility
+	if(vendor_id== OFILM_VENDOR)
+	{
+		snprintf(vendor_for_id,HARDWARE_MAX_ITEM_LONGTH,"OFILM");
+	}else if(vendor_id == LENS_VENDOR){
+		snprintf(vendor_for_id,HARDWARE_MAX_ITEM_LONGTH,"LENS");
+	}else {
+		snprintf(vendor_for_id,HARDWARE_MAX_ITEM_LONGTH,"Other vendor");
+	}
+
+	if(ic_type == TP_IC_FT5446)
+	{
+		snprintf(ic_name,HARDWARE_MAX_ITEM_LONGTH,"FT5446");
+	}else{
+		snprintf(ic_name,HARDWARE_MAX_ITEM_LONGTH,"Other IC");
+	}
+#endif
+    printk("ttt hardwareinfo_set vendor id :%d, ic_type : %d\n",vendor_id,ic_type);
+	snprintf(firmware_ver,HARDWARE_MAX_ITEM_LONGTH,"%s,%s,FW:0x%x",vendor_for_id,ic_name,fw_ver);
+	FTS_INFO("firmware_ver=%s\n", firmware_ver);
+
+	err = hardwareinfo_set_prop(HARDWARE_TP,firmware_ver);
+        if (err < 0)
+		return ;
+
+	return ;
+
+}
 static int fts_input_event(struct input_dev *dev,
 		unsigned int type, unsigned int code, int value)
 {
@@ -1000,6 +1043,9 @@ static int tpd_probe(struct i2c_client *client, const struct i2c_device_id *id)
         FTS_ERROR("not focal IC, unregister driver");
         goto err_input_init;
     }
+    fts_i2c_read_reg(fts_data->client, FTS_REG_VENDOR_ID,&vendor_id);
+    fts_i2c_read_reg(fts_data->client, FTS_REG_CHIP_ID, &ic_type);
+    printk("ttt ftsss_probe vendor id :%d, ic_type : %d\n",vendor_id,ic_type);
 #if FTS_APK_NODE_EN////1
     ret = fts_create_apk_debug_channel(ts_data);
     if (ret) {
@@ -1079,6 +1125,7 @@ static int tpd_probe(struct i2c_client *client, const struct i2c_device_id *id)
 
     tpd_load_status = 1;
     FTS_DEBUG("TPD_RES_Y:%d", (int)TPD_RES_Y);
+    hardwareinfo_tp_register(hardwareinfo_set, &fts_data);
 #if FTS_LOCK_DOWN_INFO
 	fts_lockdown_init(client,fts_data);
 #endif

@@ -362,7 +362,6 @@ of ftrace. Here is a list of some of the key files:
 		  to correlate events across hypervisor/guest if
 		  tb_offset is known.
 
-<<<<<<< HEAD
 	  mono: This uses the fast monotonic clock (CLOCK_MONOTONIC)
 		which is monotonic and is subject to NTP rate adjustments.
 
@@ -383,8 +382,6 @@ of ftrace. Here is a list of some of the key files:
 		processing should be able to handle them. See comments in the
 		ktime_get_boot_fast_ns() function for more information.
 
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 	To set a clock, simply echo the clock name into this file.
 
 	  echo global > trace_clock
@@ -2125,7 +2122,6 @@ will produce:
  1)   1.449 us    |             }
 
 
-<<<<<<< HEAD
 You can disable the hierarchical function call formatting and instead print a
 flat list of function entry and return events.  This uses the format described
 in the Output Formatting section and respects all the trace options that
@@ -2155,8 +2151,6 @@ control that formatting.  Hierarchical formatting is the default.
                 sh-1806  [001] d...   198.843453: graph_ret: func=_raw_spin_unlock_irqrestore
 
 
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 You might find other useful features for this tracer in the
 following "dynamic ftrace" section such as tracing only specific
 functions or tasks.

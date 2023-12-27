@@ -1,5 +1,6 @@
 #
 # Copyright (C) 2015 MediaTek Inc.
+# Copyright (C) 2019 XiaoMi, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -34,7 +35,6 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/timer/timesync/
 ifeq ($(CONFIG_MTK_LENS_USE_MODULE), y)
 
 MAIN_CFILES += main_lens.c
-
 # cereus lens
 MAIN_CFILES  += common/cereus_dw9714af_ofilm/CEREUS_DW9714AF_OFILM.c
 MAIN_CFILES  += common/cereus_dw9714af_sunny/CEREUS_DW9714AF_SUNNY.c
@@ -48,7 +48,6 @@ MAIN_CFILES  += common/bu6429af/BU6429AF.c
 MAIN_CFILES  += common/bu6429af/bu64748af.c
 MAIN_CFILES  += common/bu6429af/bu64748_function.c
 MAIN_CFILES += common/dw9714af/DW9714AF.c
-MAIN_CFILES += common/dw9763af/DW9763AF.c
 MAIN_CFILES  += common/dw9814af/DW9814AF.c
 MAIN_CFILES  += common/dw9718af/DW9718AF.c
 MAIN_CFILES  += common/dw9718saf/DW9718SAF.c
@@ -99,7 +98,6 @@ obj-y  += common/bu6424af/
 obj-y  += common/bu6429af/
 obj-y  += common/bu64748af/
 obj-y  += common/dw9714af/
-obj-y  += common/dw9763af/
 obj-y  += common/dw9814af/
 obj-y  += common/dw9718af/
 obj-y  += common/dw9718saf/
@@ -111,6 +109,7 @@ obj-y  += common/lc898217af/
 obj-y  += common/lc898217afa/
 obj-y  += common/lc898217afb/
 obj-y  += common/lc898217afc/
+obj-y  += common/lc898229af/
 obj-y  += common/lc898122af/
 obj-y  += common/wv511aaf/
 obj-y  += common/ak7371af/

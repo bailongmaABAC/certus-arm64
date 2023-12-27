@@ -150,3 +150,4 @@ int display_bias_disable(void)
 }
 EXPORT_SYMBOL(display_bias_disable);
 #endif
+

@@ -276,7 +276,6 @@ static void lcm_resume_power(void)
 }
 
 
-#if 0
 static int cabc_status = 0;
 static void setCabcStatus(void)
 {
@@ -288,7 +287,7 @@ static void setCabcStatus(void)
 		}
 	}
 }
-#endif
+
 
 static void lcm_init(void)
 {
@@ -332,7 +331,7 @@ static unsigned int lcm_esd_recover(void)
 
 }
 
-#if 0
+
 static struct LCM_setting_table cabc_level[] = {
         {0x55, 1, {0x00} },
         {REGFLAG_END_OF_TABLE, 0x00, {} }
@@ -357,7 +356,7 @@ static void lcm_get_cabc_status(int *status)
 	*status = cabc_status;
 	pr_debug("in TIANMA panel driver , cabc get to %d\n", cabc_status);
 }
-#endif
+
 
 #if 0
 static void lcm_get_cabc_status(int *status)
@@ -392,7 +391,7 @@ struct LCM_DRIVER hx8394f_hd720_dsi_vdo_tianma_lcm_drv = {
 	.resume = lcm_resume,
 	.set_backlight_cmdq = lcm_setbacklight_cmdq,
 
-	//.set_cabc_cmdq = lcm_set_cabc_cmdq,
-	//.get_cabc_status = lcm_get_cabc_status,
+	.set_cabc_cmdq = lcm_set_cabc_cmdq,
+	.get_cabc_status = lcm_get_cabc_status,
 
 };

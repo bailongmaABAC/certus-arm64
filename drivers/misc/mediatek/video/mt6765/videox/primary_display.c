@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 MediaTek Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -124,9 +125,6 @@ static unsigned int g_skip;
 #if 0 //def CONFIG_TRUSTONIC_TRUSTED_UI
 static struct switch_dev disp_switch_data;
 #endif
-
-static uint display_framerate_main;
-static uint display_framerate_ext;
 
 #if 0
 /* global variable for idle manager */
@@ -650,7 +648,7 @@ static int primary_show_basic_debug_info(struct disp_frame_cfg_t *cfg)
 		primary_display_is_video_mode() ? "vdo," : "cmd,");
 	screen_logger_add_message("mode", MESSAGE_REPLACE, disp_tmp);
 
-	for (i = 0; i < cfg->input_layer_num; i++) {
+	for (i = 0; TOTAL_OVL_LAYER_NUM; i++) {
 		if (cfg->input_cfg[i].tgt_offset_y == 0 &&
 		    cfg->input_cfg[i].layer_enable) {
 			dst_layer_id =
@@ -766,10 +764,8 @@ static unsigned int _fps_ctx_calc_cur_fps(struct fps_ctx_t *fps_ctx,
 	unsigned long long delta;
 	unsigned long long fps = 1000000000;
 
-	if (cur_ns > fps_ctx->last_trig) {
-		delta = cur_ns - fps_ctx->last_trig;
-		do_div(fps, delta);
-	}
+	delta = cur_ns - fps_ctx->last_trig;
+	do_div(fps, delta);
 
 	if (fps > 120ULL)
 		fps = 120ULL;
@@ -784,7 +780,6 @@ static unsigned int _fps_ctx_get_avg_fps(struct fps_ctx_t *fps_ctx)
 	if (fps_ctx->cur_wnd_sz == 0)
 		return 0;
 	avg_fps = fps_ctx->total / fps_ctx->cur_wnd_sz;
-	display_framerate_main = avg_fps;
 	return avg_fps;
 }
 
@@ -794,7 +789,6 @@ static unsigned int _fps_ctx_get_avg_fps_ext(struct fps_ctx_t *fps_ctx,
 	unsigned int avg_fps;
 
 	avg_fps = (fps_ctx->total + abs_fps) / (fps_ctx->cur_wnd_sz + 1);
-	display_framerate_ext = avg_fps;
 	return avg_fps;
 }
 
@@ -2200,12 +2194,6 @@ static int _DC_switch_to_DL_fast(int block)
 	/* copy ovl config from DC handle to DL handle */
 	memcpy(data_config_dl->ovl_config, data_config_dc->ovl_config,
 		sizeof(data_config_dl->ovl_config));
-	memcpy(&data_config_dl->rsz_enable, &data_config_dc->rsz_enable,
-		sizeof(data_config_dc->rsz_enable));
-	memcpy(&data_config_dl->rsz_src_roi, &data_config_dc->rsz_src_roi,
-		sizeof(data_config_dc->rsz_src_roi));
-	memcpy(&data_config_dl->rsz_dst_roi, &data_config_dc->rsz_dst_roi,
-		sizeof(data_config_dc->rsz_dst_roi));
 	/* before power off, we should wait wdma0_eof first!!! */
 	_cmdq_flush_config_handle_mira(pgc->cmdq_handle_ovl1to2_config, 1);
 	cmdqRecReset(pgc->cmdq_handle_ovl1to2_config);
@@ -3102,7 +3090,7 @@ static int _Interface_fence_release_callback(unsigned long userdata)
 
 #ifdef _DEBUG_DITHER_HANG_
 	if (primary_display_is_video_mode()) {
-		unsigned int status = 0;
+		unsigned int status;
 
 		cmdqBackupReadSlot(pgc->dither_status_info, 0, &status);
 		if ((status) != 0x10001) {
@@ -6153,7 +6141,7 @@ static void _ovl_yuv_throughput_freq_request
 
 static void _ovl_sbch_invalid_config(struct cmdqRecStruct *cmdq_handle)
 {
-	int i = 0;
+	int i = 0, j = 0;
 	CMDQ_VARIABLE sbch_invalid_status;
 	CMDQ_VARIABLE result;
 	CMDQ_VARIABLE shift;
@@ -6162,8 +6150,8 @@ static void _ovl_sbch_invalid_config(struct cmdqRecStruct *cmdq_handle)
 	cmdq_op_init_variable(&result);
 	cmdq_op_init_variable(&shift);
 
-	for (i = 0; i < OVL_NUM; i++) {
-		unsigned long ovl_base = ovl_base_addr(i);
+	for (j = 0; j < OVL_NUM; j++) {
+		unsigned long ovl_base = ovl_base_addr(j);
 
 		if (ovl_base == 0)
 			continue;
@@ -6784,7 +6772,7 @@ static int primary_frame_cfg_input(struct disp_frame_cfg_t *cfg)
 			}
 		}
 		if (all_zero)
-			DISPERR("HWC set zero matrix\n");
+			disp_aee_print("HWC set zero matrix\n");
 		else if (!primary_display_is_decouple_mode()) {
 			disp_ccorr_set_color_matrix(cmdq_handle,
 				m_ccorr_config.color_matrix,
@@ -6941,8 +6929,7 @@ int primary_display_user_cmd(unsigned int cmd, unsigned long arg)
 	mmprofile_log_ex(ddp_mmp_get_events()->primary_display_cmd,
 		MMPROFILE_FLAG_START, _IOC_NR(cmd), 0);
 
-	if (cmd == DISP_IOCTL_AAL_GET_HIST || cmd == DISP_IOCTL_CCORR_GET_IRQ
-		|| cmd == DISP_IOCTL_SUPPORT_COLOR_TRANSFORM) {
+	if (cmd == DISP_IOCTL_AAL_GET_HIST || cmd == DISP_IOCTL_CCORR_GET_IRQ) {
 		_primary_path_lock(__func__);
 
 		if (disp_helper_get_option(DISP_OPT_USE_CMDQ)) {
@@ -8399,7 +8386,7 @@ int primary_display_capture_framebuffer_ovl(unsigned long pbuf,
 	disp_ion_get_mva(ion_display_client, ion_display_handle,
 		&mva, DISP_M4U_PORT_DISP_WDMA0);
 	disp_ion_cache_flush(ion_display_client, ion_display_handle,
-			     ION_CACHE_FLUSH_BY_RANGE);
+		ION_CACHE_FLUSH_ALL);
 
 	tmp = disp_helper_get_option(DISP_OPT_SCREEN_CAP_FROM_DITHER);
 	if (tmp == 0)
@@ -8411,7 +8398,7 @@ int primary_display_capture_framebuffer_ovl(unsigned long pbuf,
 		_screen_cap_by_cpu((unsigned int)mva, ufmt, after_eng);
 
 	disp_ion_cache_flush(ion_display_client, ion_display_handle,
-		ION_CACHE_FLUSH_BY_RANGE);
+		ION_CACHE_INVALID_BY_RANGE);
 
 out:
 	if (ion_display_client)
@@ -8438,7 +8425,7 @@ int primary_display_capture_framebuffer_ovl(unsigned long pbuf,
 	int buffer_size = h_yres * w_xres * pixel_byte;
 	enum DISP_MODULE_ENUM after_eng = DISP_MODULE_OVL0;
 	int tmp;
-	struct m4u_client_t *m4uClient = NULL;
+	m4u_client_t *m4uClient = NULL;
 	unsigned int mva = 0;
 #endif
 	DISPMSG("primary capture: begin\n");
@@ -8485,7 +8472,7 @@ int primary_display_capture_framebuffer_ovl(unsigned long pbuf,
 		_screen_cap_by_cpu(mva, ufmt, after_eng);
 
 	ret = m4u_cache_sync(m4uClient, DISP_M4U_PORT_DISP_WDMA0, pbuf,
-			     buffer_size, mva, M4U_CACHE_FLUSH_BY_RANGE);
+			     buffer_size, mva, M4U_CACHE_INVALID_BY_RANGE);
 
 out:
 	if (mva > 0)
@@ -8622,57 +8609,41 @@ unsigned int primary_display_get_option(const char *option)
 
 int primary_display_lcm_ATA(void)
 {
-	struct dsi_cmd_desc cmd_tab[3];
-	unsigned int i;
-	unsigned int ret = 0;
+	enum DISP_STATUS ret = DISP_STATUS_OK;
 
 	DISPFUNC();
-	if (!primary_display_is_video_mode()) {
-		_primary_path_switch_dst_lock();
-		primary_display_esd_check_enable(0);
-		_primary_path_lock(__func__);
-		disp_irq_esd_cust_bycmdq(0);
-		if (pgc->state == 0) {
-			DISPCHECK(
-				"path is already sleep, skip ata lcm read\n");
-			goto done;
-		}
-		ret = disp_lcm_ATA(pgc->plcm);
-		dpmgr_path_start(pgc->dpmgr_handle, CMDQ_DISABLE);
-	} else {
-		memset(&cmd_tab, 0, 3 * sizeof(struct dsi_cmd_desc));
-
-		/*read display power mode*/
-		cmd_tab[0].dtype = 0x0A;
-		cmd_tab[0].payload = vmalloc(4 * sizeof(unsigned char));
-		memset(cmd_tab[0].payload, 0, 4);
-		cmd_tab[0].dlen = 4;
-
-		do_lcm_vdo_lp_read(cmd_tab, 1);
-
-		DISPINFO("read lcm addr:0x%x--dlen:%d\n",
-			cmd_tab[0].dtype, cmd_tab[0].dlen);
-		for (i = 0; i < cmd_tab[0].dlen; i++) {
-			DISPINFO("read lcm addr:0x%x--byte:%d,val:0x%x\n",
-			cmd_tab[0].dtype, i, *(cmd_tab[0].payload + i));
-		}
-
-		if (*(cmd_tab[0].payload) == 0x9C) {
-			DISPINFO("[LCM ATA Check] [0x0A]=0x%02x\n",
-				*(cmd_tab[0].payload));
-			ret = 1;
-		} else {
-			ret = disp_lcm_ATA(pgc->plcm);
-		}
-		vfree(cmd_tab[0].payload);
+	_primary_path_switch_dst_lock();
+	primary_display_esd_check_enable(0);
+	_primary_path_lock(__func__);
+	disp_irq_esd_cust_bycmdq(0);
+	if (pgc->state == 0) {
+		DISPCHECK(
+			"ATA_LCM, primary display path is already sleep, skip\n");
+		goto done;
 	}
+
+	DISPCHECK("dxs [ATA_LCM]primary display path stop[begin]\n");
+	if (primary_display_is_video_mode())
+		dpmgr_path_ioctl(pgc->dpmgr_handle, NULL,
+			DDP_STOP_VIDEO_MODE, NULL);
+
+	DISPCHECK("[ATA_LCM]primary display path stop[end]\n");
+	ret = disp_lcm_ATA(pgc->plcm);
+	dpmgr_path_start(pgc->dpmgr_handle, CMDQ_DISABLE);
+	if (primary_display_is_video_mode()) {
+		/*
+		 * for video mode, we need to force trigger here
+		 * for cmd mode, just set DPREC_EVENT_CMDQ_SET_EVENT_ALLOW when
+		 * trigger loop start
+		 */
+		dpmgr_path_trigger(pgc->dpmgr_handle, NULL, CMDQ_DISABLE);
+	}
+
 done:
-	if (!primary_display_is_video_mode()) {
-		disp_irq_esd_cust_bycmdq(1);
-		_primary_path_unlock(__func__);
-		primary_display_esd_check_enable(1);
-		_primary_path_switch_dst_unlock();
-	}
+	disp_irq_esd_cust_bycmdq(1);
+	_primary_path_unlock(__func__);
+	primary_display_esd_check_enable(1);
+	_primary_path_switch_dst_unlock();
 	return ret;
 }
 
@@ -9547,5 +9518,81 @@ int primary_display_set_scenario(int scenario)
 	return ret;
 }
 
-module_param(display_framerate_main, uint, 0664);
-module_param(display_framerate_ext, uint, 0664);
+
+int _set_cabc_by_cmdq(unsigned int enable)
+{
+	int ret = 0;
+	struct cmdqRecStruct *cmdq_handle_cabc = NULL;
+
+	ret = cmdqRecCreate(CMDQ_SCENARIO_PRIMARY_DISP, &cmdq_handle_cabc);
+	DISPDBG("primary cabc, handle=%p\n", cmdq_handle_cabc);
+	if (ret) {
+		DISPWARN("fail to create primary cmdq handle for cabc\n");
+		return -1;
+	}
+
+	if (primary_display_is_video_mode()) {
+		cmdqRecReset(cmdq_handle_cabc);
+		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_cabc);
+		disp_lcm_set_cabc(pgc->plcm, cmdq_handle_cabc, enable);
+		_cmdq_flush_config_handle_mira(cmdq_handle_cabc, 1);
+		DISPMSG("[BL]_set_backlight_by_cmdq ret=%d\n", ret);
+	} else {
+		cmdqRecReset(cmdq_handle_cabc);
+		cmdqRecWait(cmdq_handle_cabc, CMDQ_SYNC_TOKEN_CABC_EOF);
+		_cmdq_handle_clear_dirty(cmdq_handle_cabc);
+		_cmdq_insert_wait_frame_done_token_mira(cmdq_handle_cabc);
+		disp_lcm_set_backlight(pgc->plcm, cmdq_handle_cabc, enable);
+		cmdqRecSetEventToken(cmdq_handle_cabc,
+			CMDQ_SYNC_TOKEN_CONFIG_DIRTY);
+		cmdqRecSetEventToken(cmdq_handle_cabc,
+			CMDQ_SYNC_TOKEN_CABC_EOF);
+		_cmdq_flush_config_handle_mira(cmdq_handle_cabc, 1);
+		DISPMSG("[BL]_set_backlight_by_cmdq ret=%d\n", ret);
+	}
+	cmdqRecDestroy(cmdq_handle_cabc);
+	cmdq_handle_cabc = NULL;
+	mmprofile_log_ex(ddp_mmp_get_events()->primary_set_bl,
+		MMPROFILE_FLAG_PULSE, 1, 5);
+
+	return ret;
+}
+
+int primary_display_set_cabc(unsigned int enable)
+{
+	int ret = 0;
+	static unsigned int last_status;
+
+	DISPFUNC();
+	_primary_path_switch_dst_lock();
+	_primary_path_lock(__func__);
+	if (pgc->state == DISP_SLEPT) {
+		DISPWARN("Sleep State set CABC invald\n");
+	} else {
+		primary_display_idlemgr_kick(__func__, 0);
+		if (primary_display_cmdq_enabled()) {
+			_set_cabc_by_cmdq(enable);
+			atomic_set(&delayed_trigger_kick, 1);
+		} else {
+			DISPWARN("CAMQ disbaled, not support set CABC\n");
+		}
+		last_status = enable;
+	}
+	_primary_path_unlock(__func__);
+	_primary_path_switch_dst_unlock();
+	return ret;
+}
+
+int primary_display_get_cabc(int *status)
+{
+	int ret = 0;
+
+	if (pgc->state == DISP_SLEPT) {
+		DISPWARN("Sleep State get CABC invald\n");
+	} else {
+		ret = disp_lcm_get_cabc(pgc->plcm, status);
+
+	}
+	return ret;
+}
+

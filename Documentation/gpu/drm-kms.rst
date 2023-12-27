@@ -308,15 +308,12 @@ Color Management Properties
 .. kernel-doc:: drivers/gpu/drm/drm_color_mgmt.c
    :export:
 
-<<<<<<< HEAD
 Explicit Fencing Properties
 ---------------------------
 
 .. kernel-doc:: drivers/gpu/drm/drm_atomic.c
    :doc: explicit fencing properties
 
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 Existing KMS Properties
 -----------------------
 

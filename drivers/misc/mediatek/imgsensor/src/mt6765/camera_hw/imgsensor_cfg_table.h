@@ -19,6 +19,11 @@
 
 #define IMGSENSOR_DEV_NAME "kd_camera_hw"
 
+#define IMGSENSOR_SENSOR_IDX_NAME_MAIN  "0"
+#define IMGSENSOR_SENSOR_IDX_NAME_SUB   "1"
+#define IMGSENSOR_SENSOR_IDX_NAME_MAIN2 "2"
+#define IMGSENSOR_SENSOR_IDX_NAME_SUB2 "3"
+#define IMGSENSOR_SENSOR_IDX_NAME_MAIN3 "4"
 
 #define IMGSENSOR_HW_POWER_INFO_MAX	12
 #define IMGSENSOR_HW_SENSOR_MAX_NUM	8
@@ -129,9 +134,8 @@ struct IMGSENSOR_HW_POWER_INFO {
 };
 
 struct IMGSENSOR_HW_POWER_SEQ {
-	char                   *name;
+	char                   *idx;
 	struct IMGSENSOR_HW_POWER_INFO pwr_info[IMGSENSOR_HW_POWER_INFO_MAX];
-	u32                    _idx;
 };
 
 struct IMGSENSOR_HW_DEVICE {

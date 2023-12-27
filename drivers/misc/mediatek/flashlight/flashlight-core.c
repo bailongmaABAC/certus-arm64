@@ -373,8 +373,7 @@ int flashlight_dev_register(
 			fdev->charger_status = FLASHLIGHT_CHARGER_READY;
 			list_add_tail(&fdev->node, &flashlight_list);
 			mutex_unlock(&fl_mutex);
-		} else
-			pr_info("device name no sync with flashlight_id\n");
+		}
 	}
 
 	return 0;
@@ -660,7 +659,6 @@ static long _flashlight_ioctl(
 	int type, ct, part;
 	int ret = 0;
 
-	memset(&fl_arg, 0, sizeof(struct flashlight_user_arg));
 	if (copy_from_user(&fl_arg, (void __user *)arg,
 				sizeof(struct flashlight_user_arg))) {
 		pr_err("Failed copy arguments from user\n");

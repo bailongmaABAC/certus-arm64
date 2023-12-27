@@ -44,6 +44,7 @@
 
 #include "thermal_core.h"
 #include "thermal_hwmon.h"
+#include "mtk_change_policy.h"
 
 MODULE_AUTHOR("Zhang Rui");
 MODULE_DESCRIPTION("Generic thermal management sysfs support");
@@ -62,7 +63,10 @@ static DEFINE_MUTEX(thermal_governor_lock);
 
 static atomic_t in_suspend;
 
+static struct thermal_switch_config g_sconfig;
 static struct thermal_governor *def_governor;
+
+int aptemp_return_value = 0;
 
 static struct thermal_governor *__find_governor(const char *name)
 {
@@ -404,7 +408,7 @@ static void thermal_zone_device_set_polling(struct thermal_zone_device *tz,
 					&tz->poll_queue,
 					msecs_to_jiffies(delay));
 	else
-		cancel_delayed_work_sync(&tz->poll_queue);
+		cancel_delayed_work(&tz->poll_queue);
 }
 
 static void monitor_thermal_zone(struct thermal_zone_device *tz)
@@ -599,18 +603,14 @@ static void update_temperature(struct thermal_zone_device *tz)
 			tz->last_temperature, tz->temperature);
 }
 
-static void thermal_zone_device_init(struct thermal_zone_device *tz)
-{
-	struct thermal_instance *pos;
-	tz->temperature = THERMAL_TEMP_INVALID;
-	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
-		pos->initialized = false;
-}
-
 static void thermal_zone_device_reset(struct thermal_zone_device *tz)
 {
+	struct thermal_instance *pos;
+
+	tz->temperature = THERMAL_TEMP_INVALID;
 	tz->passive = 0;
-	thermal_zone_device_init(tz);
+	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
+		pos->initialized = false;
 }
 
 void thermal_zone_device_update(struct thermal_zone_device *tz,
@@ -648,6 +648,12 @@ static void thermal_zone_device_check(struct work_struct *work)
 #define to_thermal_zone(_dev) \
 	container_of(_dev, struct thermal_zone_device, device)
 
+
+void thermal_ccc_identify(void)
+{
+	sysfs_notify(&g_sconfig.device.kobj, NULL, "temp_state");
+}
+
 static ssize_t
 type_show(struct device *dev, struct device_attribute *attr, char *buf)
 {
@@ -669,6 +675,15 @@ temp_show(struct device *dev, struct device_attribute *attr, char *buf)
 
 	return sprintf(buf, "%d\n", temperature);
 }
+
+
+static ssize_t
+temp_state_show( struct device *dev, struct device_attribute *attr, char *buf)
+{
+       printk("[mtktsAP-temp_state_show] %d\n", aptemp_return_value);
+	return sprintf(buf, "%d\n", aptemp_return_value);
+}
+
 
 static ssize_t
 mode_show(struct device *dev, struct device_attribute *attr, char *buf)
@@ -707,7 +722,6 @@ mode_store(struct device *dev, struct device_attribute *attr,
 
 	if (result)
 		return result;
-
 	return count;
 }
 
@@ -1167,6 +1181,9 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
 
 static DEVICE_ATTR(type, 0444, type_show, NULL);
 static DEVICE_ATTR(temp, 0444, temp_show, NULL);
+
+static DEVICE_ATTR(temp_state, 0644, temp_state_show, NULL);
+
 static DEVICE_ATTR(mode, 0644, mode_show, mode_store);
 static DEVICE_ATTR(passive, S_IRUGO | S_IWUSR, passive_show, passive_store);
 static DEVICE_ATTR(policy, S_IRUGO | S_IWUSR, policy_show, policy_store);
@@ -2310,7 +2327,7 @@ static int thermal_pm_notify(struct notifier_block *nb,
 		atomic_set(&in_suspend, 0);
 		mutex_lock(&thermal_list_lock);
 		list_for_each_entry(tz, &thermal_tz_list, node) {
-			thermal_zone_device_init(tz);
+			thermal_zone_device_reset(tz);
 			thermal_zone_device_update(tz,
 						   THERMAL_EVENT_UNSPECIFIED);
 		}
@@ -2325,6 +2342,71 @@ static int thermal_pm_notify(struct notifier_block *nb,
 static struct notifier_block thermal_pm_nb = {
 	.notifier_call = thermal_pm_notify,
 };
+
+
+static ssize_t
+sconfig_show(struct device *dev, struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "Current thermal policy index: %d\n",
+		g_sconfig.thermal_policy_index);
+}
+
+static ssize_t
+sconfig_store(struct device *dev, struct device_attribute *attr,
+	   const char *buf, size_t count)
+{
+	int index;
+
+	if (kstrtoint(buf, 10, &index))
+		return -EINVAL;
+
+	g_sconfig.thermal_policy_index = index;
+	mtk_change_thermal_policy(g_sconfig.thermal_policy_index, 8);
+
+	return count;
+}
+
+static DEVICE_ATTR(sconfig, 0664, sconfig_show, sconfig_store);
+
+/*
+ * register_thermal_switch_config - create a sconfig sys node
+ * Create "/sys/class/thermal/thermal_message/sconfig"
+ * Return: 0 on success, proper error code otherwise
+ *
+ */
+int __init register_thermal_switch_config(void)
+{
+	int result;
+
+	g_sconfig.device.class = &thermal_class;
+
+	dev_set_name(&g_sconfig.device, "thermal_message");
+	result = device_register(&g_sconfig.device);
+	if (result)
+		return result;
+
+	/* sys I/F */
+        result = device_create_file(&g_sconfig.device, &dev_attr_temp_state);
+	result = device_create_file(&g_sconfig.device, &dev_attr_sconfig);
+	if (result)
+		goto unregister_device;
+
+	return 0;
+
+unregister_device:
+	device_unregister(&g_sconfig.device);
+	return result;
+}
+
+/*
+ * unregister_thermal_switch_config - destroy the sconfig sys node
+ *
+ */
+void unregister_thermal_switch_config(void)
+{
+	device_remove_file(&g_sconfig.device, &dev_attr_sconfig);
+	device_unregister(&g_sconfig.device);
+}
 
 static int __init thermal_init(void)
 {
@@ -2346,6 +2428,12 @@ static int __init thermal_init(void)
 	if (result)
 		goto exit_netlink;
 
+	result = register_thermal_switch_config();
+	if (result) {
+		pr_warn("Thermal sconfig can not register\n");
+		goto destroy_tz;
+	}
+
 	result = register_pm_notifier(&thermal_pm_nb);
 	if (result)
 		pr_warn("Thermal: Can not register suspend notifier, return %d\n",
@@ -2353,6 +2441,8 @@ static int __init thermal_init(void)
 
 	return 0;
 
+destroy_tz:
+	of_thermal_destroy_zones();
 exit_netlink:
 	genetlink_exit();
 unregister_class:
@@ -2371,6 +2461,7 @@ error:
 static void __exit thermal_exit(void)
 {
 	unregister_pm_notifier(&thermal_pm_nb);
+	unregister_thermal_switch_config();
 	of_thermal_destroy_zones();
 	genetlink_exit();
 	class_unregister(&thermal_class);

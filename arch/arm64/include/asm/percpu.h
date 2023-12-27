@@ -49,7 +49,7 @@ static inline unsigned long __my_cpu_offset(void)
 static inline unsigned long __percpu_##op(void *ptr,			\
 			unsigned long val, int size)			\
 {									\
-	unsigned long loop, ret = 0;					\
+	unsigned long loop, ret;					\
 									\
 	switch (size) {							\
 	case 1:								\
@@ -93,7 +93,6 @@ static inline unsigned long __percpu_##op(void *ptr,			\
 		: [val] "Ir" (val));					\
 		break;							\
 	default:							\
-		ret = 0;						\
 		BUILD_BUG();						\
 	}								\
 									\
@@ -107,7 +106,7 @@ PERCPU_OP(or, orr)
 
 static inline unsigned long __percpu_read(void *ptr, int size)
 {
-	unsigned long ret = 0;
+	unsigned long ret;
 
 	switch (size) {
 	case 1:
@@ -123,7 +122,6 @@ static inline unsigned long __percpu_read(void *ptr, int size)
 		ret = ACCESS_ONCE(*(u64 *)ptr);
 		break;
 	default:
-		ret = 0;
 		BUILD_BUG();
 	}
 
@@ -153,7 +151,7 @@ static inline void __percpu_write(void *ptr, unsigned long val, int size)
 static inline unsigned long __percpu_xchg(void *ptr, unsigned long val,
 						int size)
 {
-	unsigned long ret = 0, loop;
+	unsigned long ret, loop;
 
 	switch (size) {
 	case 1:
@@ -193,7 +191,6 @@ static inline unsigned long __percpu_xchg(void *ptr, unsigned long val,
 		: [val] "r" (val));
 		break;
 	default:
-		ret = 0;
 		BUILD_BUG();
 	}
 

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 MediaTek Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -133,7 +134,6 @@ static int accdet_auxadc_offset;
 static struct wakeup_source *accdet_irq_lock;
 static struct wakeup_source *accdet_timer_lock;
 static DEFINE_MUTEX(accdet_eint_irq_sync_mutex);
-static int s_button_status;
 
 static u32 accdet_eint_type = IRQ_TYPE_LEVEL_LOW;
 static u32 button_press_debounce = 0x400;
@@ -241,7 +241,7 @@ static void cat_register(char *buf)
 #ifdef CONFIG_ACCDET_SUPPORT_EINT0
 	sprintf(buf_temp, "[Accdet EINT0 support][MODE_%d]regs:\n",
 		accdet_dts.mic_mode);
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 #elif defined CONFIG_ACCDET_SUPPORT_EINT1
 	sprintf(buf_temp, "[ccdet EINT1 support][MODE_%d]regs:\n",
 		accdet_dts.mic_mode);
@@ -263,39 +263,39 @@ static void cat_register(char *buf)
 
 	for (i = ACCDET_RSV; i <= ACCDET_EINT1_CUR_DEB; i += 2) {
 		sprintf(buf_temp, "ADDR[0x%x]=0x%x\n", i, pmic_read(i));
-		memcpy(buf, buf_temp, strlen(buf_temp));
+		strncat(buf, buf_temp, strlen(buf_temp));
 	}
 
 	sprintf(buf_temp, "[0x%x]=0x%x\n",
 		TOP_CKPDN_CON0, pmic_read(TOP_CKPDN_CON0));
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 
 	sprintf(buf_temp, "[0x%x]=0x%x\n",
 		AUD_TOP_RST_CON0, pmic_read(AUD_TOP_RST_CON0));
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 
 	sprintf(buf_temp, "[0x%x]=0x%x, [0x%x]=0x%x, [0x%x]=0x%x\n",
 		AUD_TOP_INT_CON0, pmic_read(AUD_TOP_INT_CON0),
 		AUD_TOP_INT_MASK_CON0, pmic_read(AUD_TOP_INT_MASK_CON0),
 		AUD_TOP_INT_STATUS0, pmic_read(AUD_TOP_INT_STATUS0));
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 
 	sprintf(buf_temp, "[0x%x]=0x%x,[0x%x]=0x%x,[0x%x]=0x%x,[0x%x]=0x%x\n",
 		AUDENC_ANA_CON6, pmic_read(AUDENC_ANA_CON6),
 		AUDENC_ANA_CON9, pmic_read(AUDENC_ANA_CON9),
 		AUDENC_ANA_CON10, pmic_read(AUDENC_ANA_CON10),
 		AUDENC_ANA_CON11, pmic_read(AUDENC_ANA_CON11));
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 
 	sprintf(buf_temp, "[0x%x]=0x%x, [0x%x]=0x%x\n",
 		AUXADC_RQST0, pmic_read(AUXADC_RQST0),
 		AUXADC_ACCDET, pmic_read(AUXADC_ACCDET));
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 
 	sprintf(buf_temp, "dtsInfo:deb0=0x%x,deb1=0x%x,deb3=0x%x,deb4=0x%x\n",
 		 cust_pwm_deb->debounce0, cust_pwm_deb->debounce1,
 		 cust_pwm_deb->debounce3, cust_pwm_deb->debounce4);
-	memcpy(buf, buf_temp, strlen(buf_temp));
+	strncat(buf, buf_temp, strlen(buf_temp));
 }
 
 static int dbug_thread(void *unused)
@@ -691,6 +691,7 @@ static u32 key_check(u32 v)
 static void send_key_event(u32 keycode, u32 flag)
 {
 	switch (keycode) {
+       #ifdef WT_COMPILE_FACTORY_VERSION
 	case DW_KEY:
 		input_report_key(accdet_input_dev, KEY_VOLUMEDOWN, flag);
 		input_sync(accdet_input_dev);
@@ -701,6 +702,18 @@ static void send_key_event(u32 keycode, u32 flag)
 		input_sync(accdet_input_dev);
 		pr_debug("accdet KEY_VOLUMEUP %d\n", flag);
 		break;
+       #else
+        case DW_KEY:
+		input_report_key(accdet_input_dev, KEY_VOLUMEDOWN_NEW, flag);
+		input_sync(accdet_input_dev);
+		pr_debug("accdet KEY_VOLUMEDOWN_NEW %d\n", flag);
+		break;
+	case UP_KEY:
+		input_report_key(accdet_input_dev, KEY_VOLUMEUP_NEW, flag);
+		input_sync(accdet_input_dev);
+		pr_debug("accdet KEY_VOLUMEUP_NEW %d\n", flag);
+		break;
+       #endif
 	case MD_KEY:
 		input_report_key(accdet_input_dev, KEY_PLAYPAUSE, flag);
 		input_sync(accdet_input_dev);
@@ -1101,7 +1114,6 @@ static inline void check_cable_type(void)
 	pr_notice("accdet %s(), cur_status:%s current AB = %d\n", __func__,
 		     accdet_status_str[accdet_status], cur_AB);
 
-	s_button_status = 0;
 	pre_status = accdet_status;
 
 	switch (accdet_status) {
@@ -1165,7 +1177,6 @@ static inline void check_cable_type(void)
 				cust_pwm_deb->debounce0);
 			mutex_lock(&accdet_eint_irq_sync_mutex);
 			if (eint_accdet_sync_flag) {
-				s_button_status = 1;
 				accdet_status = HOOK_SWITCH;
 				multi_key_detection(cur_AB);
 			} else
@@ -1954,8 +1965,13 @@ int mt_accdet_probe(struct platform_device *dev)
 
 	__set_bit(EV_KEY, accdet_input_dev->evbit);
 	__set_bit(KEY_PLAYPAUSE, accdet_input_dev->keybit);
+      #ifdef WT_COMPILE_FACTORY_VERSION
 	__set_bit(KEY_VOLUMEDOWN, accdet_input_dev->keybit);
 	__set_bit(KEY_VOLUMEUP, accdet_input_dev->keybit);
+      #else 
+        __set_bit(KEY_VOLUMEDOWN_NEW, accdet_input_dev->keybit);
+	__set_bit(KEY_VOLUMEUP_NEW, accdet_input_dev->keybit);
+      #endif
 	__set_bit(KEY_VOICECOMMAND, accdet_input_dev->keybit);
 
 	__set_bit(EV_SW, accdet_input_dev->evbit);
@@ -2098,22 +2114,5 @@ void mt_accdet_remove(void)
 	cdev_del(accdet_cdev);
 	unregister_chrdev_region(accdet_devno, 1);
 	pr_debug("%s done!\n", __func__);
-}
-
-long mt_accdet_unlocked_ioctl(struct file *file, unsigned int cmd,
-	unsigned long arg)
-{
-	switch (cmd) {
-	case ACCDET_INIT:
-		break;
-	case SET_CALL_STATE:
-		break;
-	case GET_BUTTON_STATUS:
-		return s_button_status;
-	default:
-		pr_debug("[Accdet]accdet_ioctl : default\n");
-		break;
-	}
-	return 0;
 }
 

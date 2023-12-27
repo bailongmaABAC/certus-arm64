@@ -20,14 +20,14 @@
 struct stCAM_CAL_LIST_STRUCT g_camCalList[] = {
 	{CACTUS_OV13855_OFILM_SENSOR_ID, 0xA0, Common_read_region},
 	{CACTUS_S5K3L8_SUNNY_SENSOR_ID, 0xA0, Common_read_region},
-	{CEREUS_IMX486_SUNNY_SENSOR_ID, 0xA8, Common_read_region},
 	{CEREUS_OV12A10_OFILM_SENSOR_ID, 0xA8, Common_read_region},
-	{CEREUS_S5K5E8YXAUX_OFILM_SENSOR_ID, 0x5a, Common_read_region},
-	{CEREUS_S5K5E8YXAUX_SUNNY_SENSOR_ID, 0x5a, Common_read_region},
+	{CEREUS_IMX486_SUNNY_SENSOR_ID, 0xA8, Common_read_region},
 	{CACTUS_HI556_SUNNY_SENSOR_ID, 0x51, Common_read_region},
 	{CACTUS_S5K5E8YX_OFILM_SENSOR_ID, 0x5a, Common_read_region},
-	{CEREUS_S5K5E8YX_OFILM_SENSOR_ID, 0x5a, Common_read_region},
 	{CEREUS_S5K5E8YX_SUNNY_SENSOR_ID, 0x5a, Common_read_region},
+	{CEREUS_S5K5E8YX_OFILM_SENSOR_ID, 0x5a, Common_read_region},
+	{CEREUS_S5K5E8YXAUX_SUNNY_SENSOR_ID, 0x5a, Common_read_region},
+	{CEREUS_S5K5E8YXAUX_OFILM_SENSOR_ID, 0x5a, Common_read_region},
 	/*  ADD before this line */
 	{0, 0, 0}       /*end of list */
 };

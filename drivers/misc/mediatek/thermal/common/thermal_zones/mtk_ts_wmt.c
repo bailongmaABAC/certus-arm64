@@ -471,7 +471,7 @@ int tswmt_get_WiFi_tx_tput(void)
 	return tx_throughput;
 }
 
-static void wmt_cal_stats(unsigned long data)
+static int wmt_cal_stats(unsigned long data)
 {
 	struct wmt_stats *stats_info = (struct wmt_stats *)data;
 	struct timeval cur_time;
@@ -524,6 +524,7 @@ static void wmt_cal_stats(unsigned long data)
 
 	wmt_stats_timer.expires = jiffies + 1 * HZ;
 	add_timer(&wmt_stats_timer);
+	return 0;
 }
 
 static int wmt_thz_bind(struct thermal_zone_device *thz_dev,
@@ -663,7 +664,8 @@ static int wmt_thz_get_temp(struct thermal_zone_device *thz_dev, int *pv)
 	if (sensor_select < 0 || sensor_select >= NR_TS_SENSORS) {
 		#ifdef CONFIG_MTK_AEE_FEATURE
 		aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_DEFAULT,
-					"%s ", __func__);
+					"wmt_thz_get_temp ",
+					"sensor_select: %d\n", sensor_select);
 		#endif
 		sensor_select = 0;
 	}
@@ -1360,7 +1362,8 @@ struct file *filp, const char __user *buf, size_t len, loff_t *data)
 	if (sensor_select < 0 || sensor_select >= NR_TS_SENSORS) {
 		#ifdef CONFIG_MTK_AEE_FEATURE
 		aee_kernel_warning_api(__FILE__, __LINE__, DB_OPT_DEFAULT,
-					"%s ",	__func__);
+					"wmt_wifi_in_soc_write ",
+					"sensor_select: %d\n", sensor_select);
 		#endif
 		sensor_select = 0;
 	}
@@ -1957,7 +1960,7 @@ static int __init wmt_tm_init(void)
 	wmt_stats_info.pre_tx_bytes = 0;
 
 	init_timer_deferrable(&wmt_stats_timer);
-	wmt_stats_timer.function = &wmt_cal_stats;
+	wmt_stats_timer.function = (void *)&wmt_cal_stats;
 	wmt_stats_timer.data = (unsigned long)&wmt_stats_info;
 	wmt_stats_timer.expires = jiffies + 1 * HZ;
 	add_timer(&wmt_stats_timer);

@@ -1597,29 +1597,33 @@ static int check_layering_result(struct disp_layer_info *disp_info)
 
 int check_disp_info(struct disp_layer_info *disp_info)
 {
-	int disp_idx, ghead, gtail;
+	int disp_idx = 0;
+	int ghead = 0;
+	int gtail = 0;
+	int layer_num = 0;
 
 	if (disp_info == NULL) {
-		DISPERR("[DISP][HRT]disp_info is empty\n");
+		DISPERR("[HRT]disp_info is empty\n");
 		return -1;
 	}
 
 	for (disp_idx = 0 ; disp_idx < 2 ; disp_idx++) {
 
-		if (disp_info->layer_num[disp_idx] > 0 &&
+		layer_num = disp_info->layer_num[disp_idx];
+		if (layer_num > 0 &&
 			disp_info->input_config[disp_idx] == NULL) {
-			DISPERR(
-				"[DISP][HRT]Has input layer, but input config is empty, disp_idx:%d, layer_num:%d\n",
+			DISPERR("[HRT]input config is empty,disp:%d,l_num:%d\n",
 				disp_idx, disp_info->layer_num[disp_idx]);
 			return -1;
 		}
 
 		ghead = disp_info->gles_head[disp_idx];
 		gtail = disp_info->gles_tail[disp_idx];
-		if ((ghead < 0 && gtail >= 0) || (gtail < 0 && ghead >= 0)) {
-			dump_disp_info(disp_info, DISP_DEBUG_LEVEL_ERR);
-			DISPERR(
-				"[DISP][HRT]gles layer invalid, disp_idx:%d, head:%d, tail:%d\n",
+		if ((!((ghead == -1) && (gtail == -1)) &&
+			!((ghead >= 0) && (gtail >= 0)))
+			|| (ghead >= layer_num) || (gtail >= layer_num)
+			|| (ghead > gtail)) {
+			DISPERR("[HRT]gles invalid,disp:%d,head:%d,tail:%d\n",
 				disp_idx, disp_info->gles_head[disp_idx],
 				disp_info->gles_tail[disp_idx]);
 			return -1;
@@ -1914,14 +1918,11 @@ static int load_hrt_test_data(struct disp_layer_info *disp_info)
 	filp = filp_open(filename, O_RDONLY, 0777);
 	if (IS_ERR(filp)) {
 		DISPWARN("File open error:%s\n", filename);
-		set_fs(oldfs);
 		return -1;
 	}
 
 	if (!filp->f_op) {
 		DISPWARN("File Operation Method Error!!\n");
-		filp_close(filp, NULL);
-		set_fs(oldfs);
 		return -1;
 	}
 
@@ -1961,11 +1962,8 @@ static int load_hrt_test_data(struct disp_layer_info *disp_info)
 			}
 			disp_info->layer_num[disp_id] = layer_num;
 
-			if (disp_info->input_config[disp_id] == NULL) {
-				filp_close(filp, NULL);
-				set_fs(oldfs);
+			if (disp_info->input_config[disp_id] == NULL)
 				return 0;
-			}
 		} else if (strncmp(line_buf, "[set_layer]", 11) == 0) {
 			unsigned long int tmp_info;
 

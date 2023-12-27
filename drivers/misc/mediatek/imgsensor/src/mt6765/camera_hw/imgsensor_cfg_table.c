@@ -104,7 +104,7 @@ struct IMGSENSOR_HW_CFG imgsensor_custom_config[] = {
 struct IMGSENSOR_HW_POWER_SEQ platform_power_sequence[] = {
 #ifdef MIPI_SWITCH
 	{
-		PLATFORM_POWER_SEQ_NAME,
+		IMGSENSOR_SENSOR_IDX_NAME_SUB,
 		{
 			{
 				IMGSENSOR_HW_PIN_MIPI_SWITCH_EN,
@@ -120,11 +120,10 @@ struct IMGSENSOR_HW_POWER_SEQ platform_power_sequence[] = {
 				IMGSENSOR_HW_PIN_STATE_LEVEL_0,
 				0
 			},
-		},
-		IMGSENSOR_SENSOR_IDX_SUB,
+		}
 	},
 	{
-		PLATFORM_POWER_SEQ_NAME,
+		IMGSENSOR_SENSOR_IDX_NAME_MAIN2,
 		{
 			{
 				IMGSENSOR_HW_PIN_MIPI_SWITCH_EN,
@@ -140,8 +139,7 @@ struct IMGSENSOR_HW_POWER_SEQ platform_power_sequence[] = {
 				IMGSENSOR_HW_PIN_STATE_LEVEL_0,
 				0
 			},
-		},
-		IMGSENSOR_SENSOR_IDX_MAIN2,
+		}
 	},
 #endif
 
@@ -150,40 +148,7 @@ struct IMGSENSOR_HW_POWER_SEQ platform_power_sequence[] = {
 
 /* Legacy design */
 struct IMGSENSOR_HW_POWER_SEQ sensor_power_sequence[] = {
-#if defined(CACTUS_OV13855_OFILM_MIPI_RAW)
-	{
-		SENSOR_DRVNAME_CACTUS_OV13855_OFILM_MIPI_RAW,
-		{
-			{SensorMCLK, Vol_High, 0},
-			//{PDN, Vol_Low, 5},
-			{RST, Vol_Low, 10},
-			{AVDD, Vol_2800, 5},
-			{DOVDD, Vol_1800, 5},
-			{DVDD, Vol_1200, 5},
-			//{AFVDD, Vol_2800, 5},
-			{RST, Vol_Low, 5},
-			{RST, Vol_High, 5},
-			//{PDN, Vol_Low, 5},
-			//{PDN, Vol_High, 5},
-		},
-	},
-#endif
-#if defined(CACTUS_S5K3L8_SUNNY_MIPI_RAW)
-	{
-		SENSOR_DRVNAME_CACTUS_S5K3L8_SUNNY_MIPI_RAW,
-		{
-			{SensorMCLK, Vol_High, 0},
-			//{PDN, Vol_Low, 0},
-			{RST, Vol_Low, 0},
-			{DOVDD, Vol_1800, 0},
-			{AVDD, Vol_2800, 0},
-			{DVDD, Vol_1200, 0},
-			//{AFVDD, Vol_2800, 1},
-			//{PDN, Vol_High, 0},
-			{RST, Vol_High, 0}
-		},
-	},
-#endif
+/* CEREUS */
 #if defined(CEREUS_IMX486_SUNNY_MIPI_RAW)
 {
 	SENSOR_DRVNAME_CEREUS_IMX486_SUNNY_MIPI_RAW,
@@ -197,6 +162,38 @@ struct IMGSENSOR_HW_POWER_SEQ sensor_power_sequence[] = {
 		//{AFVDD, Vol_2800, 1},
 		//{PDN, Vol_High, 0},
 		{RST, Vol_High, 0}
+	},
+},
+#endif
+#if defined(CEREUS_S5K5E8YX_SUNNY_MIPI_RAW)
+{
+	SENSOR_DRVNAME_CEREUS_S5K5E8YX_SUNNY_MIPI_RAW,
+	{
+		{SensorMCLK, Vol_High, 0},
+		{DOVDD, Vol_1800, 0},
+		{AVDD, Vol_2800, 0},
+		{DVDD, Vol_1200, 0},
+		//{AFVDD, Vol_2800, 5},
+		//{PDN, Vol_Low, 4},
+		//{PDN, Vol_High, 0},
+		{RST, Vol_Low, 1},
+		{RST, Vol_High, 0}
+	},
+},
+#endif
+#if defined(CEREUS_S5K5E8YXAUX_SUNNY_MIPI_RAW)
+{
+	SENSOR_DRVNAME_CEREUS_S5K5E8YXAUX_SUNNY_MIPI_RAW,
+	{
+		{SensorMCLK, Vol_High, 0},
+		{DOVDD, Vol_1800, 0},
+		{AVDD, Vol_2800, 0},
+		{DVDD, Vol_1200, 0},
+		//{AFVDD, Vol_2800, 5},
+		{PDN, Vol_Low, 1},
+		{PDN, Vol_High, 0}
+		//{RST, Vol_Low, 1},
+		//{RST, Vol_High, 0}
 	},
 },
 #endif
@@ -218,6 +215,22 @@ struct IMGSENSOR_HW_POWER_SEQ sensor_power_sequence[] = {
 	},
 },
 #endif
+#if defined(CEREUS_S5K5E8YX_OFILM_MIPI_RAW)
+{
+	SENSOR_DRVNAME_CEREUS_S5K5E8YX_OFILM_MIPI_RAW,
+	{
+		{SensorMCLK, Vol_High, 0},
+		{DOVDD, Vol_1800, 0},
+		{AVDD, Vol_2800, 0},
+		{DVDD, Vol_1200, 0},
+		//{AFVDD, Vol_2800, 5},
+		//{PDN, Vol_Low, 4},
+		//{PDN, Vol_High, 0},
+		{RST, Vol_Low, 1},
+		{RST, Vol_High, 0}
+	},
+},
+#endif
 #if defined(CEREUS_S5K5E8YXAUX_OFILM_MIPI_RAW)
 {
 	SENSOR_DRVNAME_CEREUS_S5K5E8YXAUX_OFILM_MIPI_RAW,
@@ -234,34 +247,22 @@ struct IMGSENSOR_HW_POWER_SEQ sensor_power_sequence[] = {
 	},
 },
 #endif
-#if defined(CEREUS_S5K5E8YXAUX_SUNNY_MIPI_RAW)
-{
-	SENSOR_DRVNAME_CEREUS_S5K5E8YXAUX_SUNNY_MIPI_RAW,
+/* CACTUS */
+#if defined(CACTUS_OV13855_OFILM_MIPI_RAW)
 	{
-		{SensorMCLK, Vol_High, 0},
-		{DOVDD, Vol_1800, 0},
-		{AVDD, Vol_2800, 0},
-		{DVDD, Vol_1200, 0},
-		//{AFVDD, Vol_2800, 5},
-		{PDN, Vol_Low, 1},
-		{PDN, Vol_High, 0}
-		//{RST, Vol_Low, 1},
-		//{RST, Vol_High, 0}
-	},
-},
-#endif
-#if defined(CACTUS_HI556_SUNNY_MIPI_RAW)
-	{
-		SENSOR_DRVNAME_CACTUS_HI556_SUNNY_MIPI_RAW,
+		SENSOR_DRVNAME_CACTUS_OV13855_OFILM_MIPI_RAW,
 		{
-			{RST, Vol_Low, 1},
-			//{PDN, Vol_Low, 1},
-			{DOVDD, Vol_1800, 1},
-			{AVDD, Vol_2800, 1},
-			{DVDD, Vol_1200, 1},
-			//{PDN, Vol_High, 2},
-			{SensorMCLK, Vol_High, 2},
-			{RST, Vol_High, 5}
+			{SensorMCLK, Vol_High, 0},
+			//{PDN, Vol_Low, 5},
+			{RST, Vol_Low, 10},
+			{AVDD, Vol_2800, 5},
+			{DOVDD, Vol_1800, 5},
+			{DVDD, Vol_1200, 5},
+			//{AFVDD, Vol_2800, 5},
+			{RST, Vol_Low, 5},
+			{RST, Vol_High, 5},
+			//{PDN, Vol_Low, 5},
+			//{PDN, Vol_High, 5},
 		},
 	},
 #endif
@@ -281,39 +282,39 @@ struct IMGSENSOR_HW_POWER_SEQ sensor_power_sequence[] = {
 		},
 	},
 #endif
-#if defined(CEREUS_S5K5E8YX_OFILM_MIPI_RAW)
-{
-	SENSOR_DRVNAME_CEREUS_S5K5E8YX_OFILM_MIPI_RAW,
+#if defined(CACTUS_S5K3L8_SUNNY_MIPI_RAW)
 	{
-		{SensorMCLK, Vol_High, 0},
-		{DOVDD, Vol_1800, 0},
-		{AVDD, Vol_2800, 0},
-		{DVDD, Vol_1200, 0},
-		//{AFVDD, Vol_2800, 5},
-		//{PDN, Vol_Low, 4},
-		//{PDN, Vol_High, 0},
-		{RST, Vol_Low, 1},
-		{RST, Vol_High, 0}
+		SENSOR_DRVNAME_CACTUS_S5K3L8_SUNNY_MIPI_RAW,
+		{
+			{SensorMCLK, Vol_High, 0},
+			//{PDN, Vol_Low, 0},
+			{RST, Vol_Low, 0},
+			{DOVDD, Vol_1800, 0},
+			{AVDD, Vol_2800, 0},
+			{DVDD, Vol_1200, 0},
+			//{AFVDD, Vol_2800, 1},
+			//{PDN, Vol_High, 0},
+			{RST, Vol_High, 0}
+		},
 	},
-},
 #endif
-#if defined(CEREUS_S5K5E8YX_SUNNY_MIPI_RAW)
-{
-	SENSOR_DRVNAME_CEREUS_S5K5E8YX_SUNNY_MIPI_RAW,
+#if defined(CACTUS_HI556_SUNNY_MIPI_RAW)
 	{
-		{SensorMCLK, Vol_High, 0},
-		{DOVDD, Vol_1800, 0},
-		{AVDD, Vol_2800, 0},
-		{DVDD, Vol_1200, 0},
-		//{AFVDD, Vol_2800, 5},
-		//{PDN, Vol_Low, 4},
-		//{PDN, Vol_High, 0},
-		{RST, Vol_Low, 1},
-		{RST, Vol_High, 0}
+		SENSOR_DRVNAME_CACTUS_HI556_SUNNY_MIPI_RAW,
+		{
+			{RST, Vol_Low, 1},
+			//{PDN, Vol_Low, 1},
+			{DOVDD, Vol_1800, 1},
+			{AVDD, Vol_2800, 1},
+			{DVDD, Vol_1200, 1},
+			//{PDN, Vol_High, 2},
+			{SensorMCLK, Vol_High, 2},
+			{RST, Vol_High, 5}
+		},
 	},
-},
 #endif
 
+/* Othes */
 #if defined(IMX398_MIPI_RAW)
 	{
 		SENSOR_DRVNAME_IMX398_MIPI_RAW,

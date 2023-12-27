@@ -51,15 +51,6 @@ Description:
 		 Controls the dirty page count condition for the in-place-update
 		 policies.
 
-<<<<<<< HEAD
-What:		/sys/fs/f2fs/<disk>/min_seq_blocks
-Date:		August 2018
-Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
-Description:
-		 Controls the dirty page count condition for batched sequential
-		 writes in ->writepages.
-
-
 What:		/sys/fs/f2fs/<disk>/min_hot_blocks
 Date:		March 2017
 Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
@@ -72,15 +63,12 @@ Contact:	"Chao Yu" <yuchao0@huawei.com>
 Description:
 		 Controls the fee section threshold to trigger SSR allocation.
 
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 What:		/sys/fs/f2fs/<disk>/max_small_discards
 Date:		November 2013
 Contact:	"Jaegeuk Kim" <jaegeuk.kim@samsung.com>
 Description:
 		 Controls the issue rate of small discard commands.
 
-<<<<<<< HEAD
 What:          /sys/fs/f2fs/<disk>/discard_granularity
 Date:          July 2017
 Contact:       "Chao Yu" <yuchao0@huawei.com>
@@ -90,33 +78,12 @@ Description:
 		The unit size is one block, now only support configuring in range
 		of [1, 512].
 
-What:          /sys/fs/f2fs/<disk>/umount_discard_timeout
-Date:          January 2019
-Contact:       "Jaegeuk Kim" <jaegeuk@kernel.org>
-Description:
-		Set timeout to issue discard commands during umount.
-		Default: 5 secs
-
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 What:		/sys/fs/f2fs/<disk>/max_victim_search
 Date:		January 2014
 Contact:	"Jaegeuk Kim" <jaegeuk.kim@samsung.com>
 Description:
 		 Controls the number of trials to find a victim segment.
 
-<<<<<<< HEAD
-What:		/sys/fs/f2fs/<disk>/migration_granularity
-Date:		October 2018
-Contact:	"Chao Yu" <yuchao0@huawei.com>
-Description:
-		 Controls migration granularity of garbage collection on large
-		 section, it can let GC move partial segment{s} of one section
-		 in one GC cycle, so that dispersing heavy overhead GC to
-		 multiple lightweight one.
-
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 What:		/sys/fs/f2fs/<disk>/dir_level
 Date:		March 2014
 Contact:	"Jaegeuk Kim" <jaegeuk.kim@samsung.com>
@@ -134,10 +101,7 @@ Date:		February 2015
 Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
 Description:
 		 Controls the trimming rate in batch mode.
-<<<<<<< HEAD
 		 <deprecated>
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 
 What:		/sys/fs/f2fs/<disk>/cp_interval
 Date:		October 2015
@@ -149,32 +113,13 @@ What:		/sys/fs/f2fs/<disk>/idle_interval
 Date:		January 2016
 Contact:	"Jaegeuk Kim" <jaegeuk@kernel.org>
 Description:
-<<<<<<< HEAD
-		 Controls the idle timing for all paths other than
-		 discard and gc path.
-
-What:		/sys/fs/f2fs/<disk>/discard_idle_interval
-Date:		September 2018
-Contact:	"Chao Yu" <yuchao0@huawei.com>
-Contact:	"Sahitya Tummala" <stummala@codeaurora.org>
-Description:
-		 Controls the idle timing for discard path.
-
-What:		/sys/fs/f2fs/<disk>/gc_idle_interval
-Date:		September 2018
-Contact:	"Chao Yu" <yuchao0@huawei.com>
-Contact:	"Sahitya Tummala" <stummala@codeaurora.org>
-Description:
-		 Controls the idle timing for gc path.
+		 Controls the idle timing.
 
 What:		/sys/fs/f2fs/<disk>/iostat_enable
 Date:		August 2017
 Contact:	"Chao Yu" <yuchao0@huawei.com>
 Description:
 		 Controls to enable/disable IO stat.
-=======
-		 Controls the idle timing.
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d
 
 What:		/sys/fs/f2fs/<disk>/ra_nid_pages
 Date:		October 2015
@@ -195,7 +140,6 @@ Date:		January 2016
 Contact:	"Shuoran Liu" <liushuoran@huawei.com>
 Description:
 		 Shows total written kbytes issued to disk.
-<<<<<<< HEAD
 
 What:		/sys/fs/f2fs/<disk>/feature
 Date:		July 2017
@@ -260,5 +204,3 @@ Description:
 		 - Del: echo '[h/c]!extension' > /sys/fs/f2fs/<disk>/extension_list
 		 - [h] means add/del hot file extension
 		 - [c] means add/del cold file extension
-=======
->>>>>>> df707bf77de6e5a457b2da6a768013a126b4a36d

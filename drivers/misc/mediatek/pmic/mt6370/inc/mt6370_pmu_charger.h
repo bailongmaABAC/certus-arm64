@@ -1,5 +1,6 @@
 /*
  *  Copyright (C) 2017 MediaTek Inc.
+ *  Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -16,9 +17,6 @@
 
 /* Define this macro if detecting apple samsung TA is needed */
 /* #define MT6370_APPLE_SAMSUNG_TA_SUPPORT */
-
-/* Define this macro if DCD timeout is supported */
-#define CONFIG_MT6370_DCDTOUT_SUPPORT
 
 /* Parameter */
 /* uA */
@@ -254,13 +252,11 @@
 
 /* ========== CHG_DEVICETYPE 0x22 ============ */
 #define MT6370_SHIFT_USBCHGEN	7
-#define MT6370_SHFT_DCDTOUTEN	6
 #define MT6370_SHIFT_DCPSTD	2
 #define MT6370_SHIFT_CDP	1
 #define MT6370_SHIFT_SDP	0
 
 #define MT6370_MASK_USBCHGEN	(1 << MT6370_SHIFT_USBCHGEN)
-#define MT6370_MASK_DCDTOUTEN	(1 << MT6370_SHFT_DCDTOUTEN)
 #define MT6370_MASK_DCPSTD	(1 << MT6370_SHIFT_DCPSTD)
 #define MT6370_MASK_CDP		(1 << MT6370_SHIFT_CDP)
 #define MT6370_MASK_SDP		(1 << MT6370_SHIFT_SDP)
@@ -272,20 +268,16 @@
 
 /* ========== USBSTATUS1 0x27 ============ */
 #define MT6370_SHIFT_USB_STATUS	4
-#define MT6370_SHIFT_DCDT	2
 
-#define MT6370_MASK_FAST_UNKNOWN_TA_DECT	(0x80)
 #define MT6370_MASK_USB_STATUS	0x70
 
-/* ========== QCSTATUS1 0x28 ============= */
-#define MT6370_SHIFT_VLGC_DISABLE	(7)
-#define MT6370_MASK_VLGC_DISABLE	(1 << MT6370_SHIFT_VLGC_DISABLE)
-
 /* ========== CHG_PUMP 0x2A ============ */
+#define MT6370_SHIFT_PP_OFF_RST 7
 #define MT6370_SHIFT_VG_LVL_SEL	1
 #define MT6370_SHIFT_VG_EN	0
 
-#define MT6370_MASK_VG_LVL_SEL	(1 << MT6370_SHIFT_LVL_SEL)
+#define MT6370_MASK_PP_OFF_RST  (1 << MT6370_SHIFT_PP_OFF_RST)
+#define MT6370_MASK_VG_LVL_SEL	(1 << MT6370_SHIFT_VG_LVL_SEL)
 #define MT6370_MASK_VG_EN	(1 << MT6370_SHIFT_VG_EN)
 
 /* ========== CHG_CTRL17 0x2B ============ */
@@ -335,11 +327,6 @@
 
 #define MT6370_MASK_ADC_STAT	(1 << MT6370_SHIFT_ADC_STAT)
 #define MT6370_MASK_CHG_STAT	0xC0
-
-/* ============ VDDA SUPPLY 0x62 ============ */
-#define MT6370_SHIFT_LBPHYS_SEL		(7)
-#define MT6370_SHIFT_LBP_DT		(5)
-#define MT6370_MASK_LBP			(0xE0)
 
 /* ========== CHG_STAT1 0xD0 ============ */
 #define MT6370_SHIFT_PWR_RDY	7

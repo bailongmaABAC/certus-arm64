@@ -175,10 +175,7 @@ enum {
 #define REQ_CRC_STATUS_ERR (0x1 << 7)
 
 typedef void (*sdio_irq_handler_t)(void *);  /* external irq handler */
-#ifndef CONFIG_MTK_COMBO_COMM
-/* prevent type redefinition in mtk_wcn_cmb_stub.h */
 typedef void (*pm_callback_t)(pm_message_t state, void *data);
-#endif
 
 #define MSDC_CD_PIN_EN      (1 << 0)  /* card detection pin is wired   */
 #define MSDC_WP_PIN_EN      (1 << 1)  /* write protection pin is wired */
@@ -338,7 +335,7 @@ struct msdc_host {
 	 * race condition with hot-plug enable
 	 */
 	spinlock_t              remove_bad_card;
-	spinlock_t              cmd_dump_lock;
+
 	 /* avoid race condition at DAT1 interrupt case*/
 	spinlock_t              sdio_irq_lock;
 	int                     clk_gate_count;
@@ -366,7 +363,6 @@ struct msdc_host {
 	struct completion       autok_done;
 
 	struct completion       xfer_done;
-	struct pm_message       pm_state;
 
 	u32                     mclk;           /* mmc subsystem clock */
 	u32                     hclk;           /* host clock speed */
@@ -375,7 +371,6 @@ struct msdc_host {
 	u8                      power_mode;     /* host power mode */
 	u8                      bus_width;
 	u8                      card_inserted;  /* card inserted ? */
-	u8                      suspend;        /* host suspended ? */
 	u8                      autocmd;
 	u8                      app_cmd;        /* for app command */
 	u32                     app_cmd_arg;
@@ -700,7 +695,7 @@ int sdcard_hw_reset(struct mmc_host *mmc);
 int sdcard_reset_tuning(struct mmc_host *mmc);
 int emmc_reinit_tuning(struct mmc_host *mmc);
 void msdc_restore_timing_setting(struct msdc_host *host);
-void msdc_save_timing_setting(struct msdc_host *host, int save_mode);
+void msdc_save_timing_setting(struct msdc_host *host);
 
 #ifdef CONFIG_MTK_EMMC_CQ_SUPPORT
 unsigned int msdc_do_cmdq_command(struct msdc_host *host,

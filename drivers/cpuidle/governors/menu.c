@@ -18,7 +18,6 @@
 #include <linux/hrtimer.h>
 #include <linux/tick.h>
 #include <linux/sched.h>
-#include <linux/sched/loadavg.h>
 #include <linux/math64.h>
 #include <linux/module.h>
 
@@ -185,7 +184,6 @@ static inline int performance_multiplier(unsigned long nr_iowaiters, unsigned lo
 	 * even when the average cpu load is under 10%.
 	 */
 	/* mult += 2 * get_loadavg(); */
-	mult += 2 * get_loadavg(load);
 
 	/* for IO wait tasks (per cpu!) we add 5x each */
 	mult += 10 * nr_iowaiters;

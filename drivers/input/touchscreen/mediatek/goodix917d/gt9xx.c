@@ -26,6 +26,7 @@
 #include <linux/of_irq.h>
 #include "gt9xx.h"
 #include "../tpd.h"
+#include <linux/hardware_info.h>
 
 #define GOODIX_COORDS_ARR_SIZE	4
 #define PROP_NAME_SIZE		24
@@ -124,6 +125,7 @@ static int gtp_esd_init(struct goodix_ts_data *ts);
 static void gtp_esd_check_func(struct work_struct *);
 static int gtp_init_ext_watchdog(struct i2c_client *client);
 #if 1
+static void hardwareinfo_set(void*drv_data);
 static int goodix_lockdown_init(void);
 
 #define BOEN_VENDOR     0x0
@@ -185,6 +187,40 @@ static int goodix_lockdown_init(void)
 
 }
 
+static void hardwareinfo_set(void*drv_data)
+	{
+		char firmware_ver[HARDWARE_MAX_ITEM_LONGTH];
+		char vendor_for_id[HARDWARE_MAX_ITEM_LONGTH];
+		char ic_name[HARDWARE_MAX_ITEM_LONGTH];
+		int err;
+			
+#if 1	//for compatibility	
+		if(vendor_id== BOEN_VENDOR)
+		{
+			snprintf(vendor_for_id,HARDWARE_MAX_ITEM_LONGTH,"BOEN");
+		}else{
+			snprintf(vendor_for_id,HARDWARE_MAX_ITEM_LONGTH,"Other vendor");
+		}
+	
+		if( ic_type == TP_IC_GT917D)
+		{
+			snprintf(ic_name,HARDWARE_MAX_ITEM_LONGTH,"GT917D");
+		}else{
+			snprintf(ic_name,HARDWARE_MAX_ITEM_LONGTH,"Other IC");
+		}
+#endif
+		printk("ttt vendor id :%d, ic_type : 0x%x\n",vendor_id,ic_type);
+		snprintf(firmware_ver,HARDWARE_MAX_ITEM_LONGTH,"%s,%s,FW:0x%x",vendor_for_id,ic_name,fw_ver);
+		printk("ttt firmware_ver=%s\n", firmware_ver);
+	
+		err = hardwareinfo_set_prop(HARDWARE_TP,firmware_ver);
+			if (err < 0)
+			return ;
+	
+		return ;
+	
+	}
+	
 #endif
 #if 1
 static ssize_t gesture_read(struct file *file, char __user * page, size_t size, loff_t * ppos)
@@ -577,7 +613,7 @@ static int gtp_gesture_handler(struct goodix_ts_data *ts)
 	    (doze_buf[2] == 0xAA) || (doze_buf[2] == 0xAB) ||
 	    (doze_buf[2] == 0xBA) || (doze_buf[2] == 0xBB) ||
 	    (doze_buf[2] == 0xCC)) {*/
-	if (doze_buf[2] == 0xCC) {//CC mean double click
+	    if ((doze_buf[2] == 0xCC)) {//CC mean double click
 		doze_status = DOZE_WAKEUP;
 		input_report_key(ts->input_dev, KEY_POWER, 1);
 		input_sync(ts->input_dev);
@@ -2437,6 +2473,7 @@ static int gtp_probe(struct i2c_client *client, const struct i2c_device_id *id)
 #if 1
  vendor_id = ts->fw_info.sensor_id;//0->boen
  goodix_lockdown_init();
+ hardwareinfo_tp_register(hardwareinfo_set, NULL);
  pdata->slide_wakeup = false;
 #endif
 

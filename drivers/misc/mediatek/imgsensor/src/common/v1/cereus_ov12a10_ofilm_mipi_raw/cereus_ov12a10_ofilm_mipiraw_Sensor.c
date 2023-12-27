@@ -45,6 +45,7 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+#include <linux/hardware_info.h>
 
 #include "cereus_ov12a10_ofilm_mipiraw_Sensor.h"
 #include "cam_cal_define.h"
@@ -346,14 +347,6 @@ static void set_dummy(void)
 	write_cmos_sensor(0x380e, imgsensor.frame_length >> 8);
 	write_cmos_sensor(0x380f, imgsensor.frame_length & 0xFF);
 }
-
-
-static kal_uint32 return_sensor_id(void)
-{
-  return ((read_cmos_sensor(0x300b) << 8) |
-  read_cmos_sensor(0x300c));
-}
-
 
 static void set_max_framerate(UINT16 framerate,kal_bool min_framelength_en)
 {
@@ -1050,6 +1043,14 @@ static void preview_setting(void)//jack yan check
 	write_cmos_sensor(0x3811, 0x04);
 	write_cmos_sensor(0x3813, 0x04);
 #endif
+#if 0
+	#ifdef CEREUS_OV12A10_OFILM_SYNC_OPEN
+	write_cmos_senor(0x3002, 0x21);
+	write_cmos_senor(0x3832, 0x08);
+	write_cmos_senor(0x3833, 0x30);
+	#endif
+#endif
+
 }
 
 #if MULTI_WRITE
@@ -1268,7 +1269,14 @@ static void capture_setting(kal_uint16 currefps)//jack yan check
 	write_cmos_sensor(0x3820, 0xa8);
 	write_cmos_sensor(0x3811, 0x0a);
 	write_cmos_sensor(0x3813, 0x08);
-	
+
+#if 0
+	#ifdef CEREUS_OV12A10_OFILM_SYNC_OPEN
+	write_cmos_senor(0x3002, 0x21);//close the func
+	write_cmos_senor(0x3832, 0x08);
+	write_cmos_senor(0x3833, 0x30);
+	#endif
+#endif	
 
   }else if(currefps == 240){
 	//24fps for PIP
@@ -1317,6 +1325,13 @@ static void capture_setting(kal_uint16 currefps)//jack yan check
 	write_cmos_sensor(0x3820, 0xa8);
 	write_cmos_sensor(0x3811, 0x0a);
 	write_cmos_sensor(0x3813, 0x08);
+#if 0
+	#ifdef CEREUS_OV12A10_OFILM_SYNC_OPEN
+	write_cmos_senor(0x3002, 0x21);//close the func
+	write_cmos_senor(0x3832, 0x08);
+	write_cmos_senor(0x3833, 0x30);
+	#endif
+#endif	
 
 }else{
 	//30fps
@@ -1365,6 +1380,19 @@ static void capture_setting(kal_uint16 currefps)//jack yan check
 	write_cmos_sensor(0x3820, 0xa8);
 	write_cmos_sensor(0x3811, 0x0a);
 	write_cmos_sensor(0x3813, 0x08);
+#if 0
+	#ifdef CEREUS_OV12A10_OFILM_SYNC_OPEN
+	
+	write_cmos_sensor(0x3002, 0x61);//open the sysnc func
+	write_cmos_sensor(0x3832, 0x18);
+	write_cmos_sensor(0x3833, 0x10);
+	write_cmos_sensor(0x3818, 0x02);
+	write_cmos_sensor(0x3819, 0x44);
+	write_cmos_sensor(0x381a, 0x1c);
+	write_cmos_sensor(0x381b, 0xe0);
+	
+	#endif
+#endif
 }
 #endif
 }
@@ -1423,6 +1451,13 @@ static void normal_video_setting(kal_uint16 currefps)
 	write_cmos_sensor(0x3820, 0xa8);
 	write_cmos_sensor(0x3811, 0x0a);
 	write_cmos_sensor(0x3813, 0x08);
+#endif
+#if 0
+	#ifdef CEREUS_OV12A10_OFILM_SYNC_OPEN
+	write_cmos_senor(0x3002, 0x21);
+	write_cmos_senor(0x3832, 0x08);
+	write_cmos_senor(0x3833, 0x30);
+	#endif
 #endif
 }
 
@@ -1657,6 +1692,12 @@ static void custom2_setting(void)//jack yan check
 #endif
 }
 
+static kal_uint32 return_sensor_id(void)
+{
+	return ((read_cmos_sensor(0x300b) << 8) |
+		read_cmos_sensor(0x300c));
+}
+
 #include "../imgsensor_i2c.h"
 #define CEREUS_OV12A10_OFILM_I2CBUS    (2)
 static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
@@ -1698,6 +1739,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 			*sensor_id = return_sensor_id();
 			if (*sensor_id == imgsensor_info.sensor_id) {
 				LOG_DBG("ov12a read sensor id cuckoo## [get_imgsensor_id] sensor id: 0x%x\n", *sensor_id);
+				hardwareinfo_set_prop(HARDWARE_BACK_CAM_MOUDULE_ID,"ofilm");
 				imgSensorSetEepromData(&sensor_eeprom_data);
 				return ERROR_NONE;
 			}
@@ -2540,7 +2582,7 @@ static kal_uint32 feature_control(
 			memcpy((void *)PDAFinfo, (void *)&imgsensor_pd_info,
 				sizeof(struct SET_PD_BLOCK_INFO_T));
 			break;
-
+		
 		case MSDK_SCENARIO_ID_HIGH_SPEED_VIDEO:
 		case MSDK_SCENARIO_ID_SLIM_VIDEO:
 		case MSDK_SCENARIO_ID_CAMERA_PREVIEW:

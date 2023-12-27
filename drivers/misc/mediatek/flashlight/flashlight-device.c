@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 MediaTek Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -75,11 +76,6 @@ const struct flashlight_device_id flashlight_id[] = {
 const struct flashlight_device_id flashlight_id[] = {
 	/* {TYPE, CT, PART, "NAME", CHANNEL, DECOUPLE} */
 	{0, 0, 0, "flashlights-lm3642", 0, 0},
-};
-#elif defined(CONFIG_MTK_FLASHLIGHT_SYWT78)
-const struct flashlight_device_id flashlight_id[] = {
-	/* {TYPE, CT, PART, "NAME", CHANNEL, DECOUPLE} */
-	{0, 0, 0, "flashlights-sywt78", 0, 0},
 };
 #else
 const struct flashlight_device_id flashlight_id[] = {

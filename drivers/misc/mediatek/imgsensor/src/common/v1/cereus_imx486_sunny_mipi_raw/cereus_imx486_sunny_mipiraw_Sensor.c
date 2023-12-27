@@ -50,6 +50,7 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 #include <linux/uaccess.h>
+#include <linux/hardware_info.h>
 
 #include "cereus_imx486_sunny_mipiraw_Sensor.h"
 #include "cam_cal_define.h"
@@ -1951,6 +1952,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 				s_DEVINFO_ccm->device_used = DEVINFO_USED;
 				devinfo_check_add_device(s_DEVINFO_ccm);
 #endif
+				hardwareinfo_set_prop(HARDWARE_BACK_CAM_MOUDULE_ID,"sunny");
 				imgSensorSetEepromData(&sensor_eeprom_data);
 				return ERROR_NONE;
 			}

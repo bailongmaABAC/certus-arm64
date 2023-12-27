@@ -27,6 +27,10 @@
 #include "cactus_s5k3l8_sunnymipiraw_Sensor.h"
 #include "cam_cal_define.h"
 
+#include <linux/hardware_info.h>
+extern int hardwareinfo_set_prop(int cmd, const char *name);
+
+
 /****************************Modify Following Strings for Debug****************************/
 #define PFX "CACTUS_S5K3L8_SUNNY"
 #define LOG_DBG(format, args...)    pr_debug(PFX "[%s] " format, __FUNCTION__, ##args)
@@ -1478,7 +1482,11 @@ static void sensor_init(void)
 	write_cmos_sensor(0x3442, 0x0100);
 #endif
 	//control continue mode use B0A0 is better
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor_byte(0xB0A0, 0x7C);//non continue mode
+	#else
 	write_cmos_sensor_byte(0xB0A0, 0x7D);//continue mode
+	#endif
 	write_cmos_sensor(0x0100, 0x0000);
 
 }	/*	sensor_init  */
@@ -1514,7 +1522,11 @@ kal_uint16 addr_data_pair_preview_cactus_s5k3l8[] = {
 	0x030E, 0x0119,
 	0x030A, 0x0001,
 	0x0308, 0x0008,
+	#ifdef NONCONTINUEMODE
+	0x0342, 0x1720,
+	#else
 	0x0342, 0x16B0,
+	#endif
 	0x0340, 0x0C86,
 	0x0202, 0x0200,
 	0x0200, 0x00C6,
@@ -1562,7 +1574,12 @@ static void preview_setting(void)
 	write_cmos_sensor(0x030E, 0x0119);
 	write_cmos_sensor(0x030A, 0x0001);
 	write_cmos_sensor(0x0308, 0x0008);
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	LOG_DBG("===NONCONTINUEMODE===");
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x0C86);
 	write_cmos_sensor(0x0202, 0x0200);
 	write_cmos_sensor(0x0200, 0x00C6);
@@ -1604,7 +1621,11 @@ kal_uint16 addr_data_pair_capture_15fps_cactus_s5k3l8[] = {
 	0x030E, 0x00c8,
 	0x030A, 0x0001,
 	0x0308, 0x0008,
+	#ifdef NONCONTINUEMODE
+	0x0342, 0x1720,
+	#else
 	0x0342, 0x16B0,
+	#endif
 	0x0340, 0x11ED,
 	0x0202, 0x0200,
 	0x0200, 0x00C6,
@@ -1643,7 +1664,11 @@ kal_uint16 addr_data_pair_capture_24fps_cactus_s5k3l8[] = {
 	0x030E, 0x0119,
 	0x030A, 0x0001,
 	0x0308, 0x0008,
+	#ifdef NONCONTINUEMODE
+	0x0342, 0x1720,
+	#else
 	0x0342, 0x16B0,
+	#endif
 	0x0340, 0x0C86,
 	0x0202, 0x0200,
 	0x0200, 0x00C6,
@@ -1683,7 +1708,11 @@ kal_uint16 addr_data_pair_capture_30fps_cactus_s5k3l8[] = {
 	0x030E, 0x0119,
 	0x030A, 0x0001,
 	0x0308, 0x0008,
+	#ifdef NONCONTINUEMODE
+	0x0342, 0x1720,
+	#else
 	0x0342, 0x16B0,
+	#endif
 	0x0340, 0x0C86,
 	0x0202, 0x0200,
 	0x0200, 0x00C6,
@@ -1723,7 +1752,11 @@ kal_uint16 addr_data_pair_capture_fps_cactus_s5k3l8[] = {
 	0x030E, 0x00c8,
 	0x030A, 0x0001,
 	0x0308, 0x0008,
+	#ifdef NONCONTINUEMODE
+	0x0342, 0x1720,
+	#else
 	0x0342, 0x16B0,
+	#endif
 	0x0340, 0x11ED,
 	0x0202, 0x0200,
 	0x0200, 0x00C6,
@@ -1790,7 +1823,11 @@ static void capture_setting(kal_uint16 currefps)
 	write_cmos_sensor(0x030E, 0x0119);
 	write_cmos_sensor(0x030A, 0x0001);
 	write_cmos_sensor(0x0308, 0x0008);
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x0C86);
 	write_cmos_sensor(0x0202, 0x0200);
 	write_cmos_sensor(0x0200, 0x00C6);
@@ -1828,7 +1865,11 @@ static void capture_setting(kal_uint16 currefps)
 	write_cmos_sensor(0x030E, 0x0119);
 	write_cmos_sensor(0x030A, 0x0001);
 	write_cmos_sensor(0x0308, 0x0008);
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x0C86);
 	write_cmos_sensor(0x0202, 0x0200);
 	write_cmos_sensor(0x0200, 0x00C6);
@@ -1872,7 +1913,11 @@ static void capture_setting(kal_uint16 currefps)
 	write_cmos_sensor(0x030E, 0x00c8);	 // 281
 	write_cmos_sensor(0x030A, 0x0001);	 // 1
 	write_cmos_sensor(0x0308, 0x0008);	 // 8
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x11ED);	 // 4589
 	write_cmos_sensor(0x0202, 0x0200);	 // 512
 	write_cmos_sensor(0x0200, 0x00C6);	 // 198
@@ -1914,7 +1959,11 @@ static void capture_setting(kal_uint16 currefps)
 	write_cmos_sensor(0x030E, 0x00c8);	 // 281
 	write_cmos_sensor(0x030A, 0x0001);	 // 1
 	write_cmos_sensor(0x0308, 0x0008);	 // 8
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x11ED);	 // 4589
 	write_cmos_sensor(0x0202, 0x0200);	 // 512
 	write_cmos_sensor(0x0200, 0x00C6);	 // 198
@@ -1970,7 +2019,11 @@ kal_uint16 addr_data_pair_hs_video_cactus_s5k3l8[] = {
 	0x030E, 0x0119,
 	0x030A, 0x0001,
 	0x0308, 0x0008,
+	#ifdef NONCONTINUEMODE
+	0x0342, 0x1720,
+	#else
 	0x0342, 0x16B0,
+	#endif
 	0x0340, 0x0323,
 	0x0202, 0x0200,
 	0x0200, 0x00C6,
@@ -2018,7 +2071,11 @@ static void hs_video_setting(void)
 	write_cmos_sensor(0x030E, 0x0119);
 	write_cmos_sensor(0x030A, 0x0001);
 	write_cmos_sensor(0x0308, 0x0008);
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x0323);
 	write_cmos_sensor(0x0202, 0x0200);
 	write_cmos_sensor(0x0200, 0x00C6);
@@ -2066,7 +2123,11 @@ static void slim_video_setting(void)
 	write_cmos_sensor(0x030E, 0x0119);
 	write_cmos_sensor(0x030A, 0x0001);
 	write_cmos_sensor(0x0308, 0x0008);
+	#ifdef NONCONTINUEMODE
+	write_cmos_sensor(0x0342, 0x1720);
+	#else
 	write_cmos_sensor(0x0342, 0x16B0);
+	#endif
 	write_cmos_sensor(0x0340, 0x0323);
 	write_cmos_sensor(0x0202, 0x0200);
 	write_cmos_sensor(0x0200, 0x00C6);
@@ -2117,6 +2178,23 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 		return ERROR_SENSOR_CONNECT_FAIL;
 	}
 
+    //sensor have two i2c address 0x6c 0x6d & 0x21 0x20, we should detect the module used i2c address
+#if 0
+	imgsensor.i2c_write_id = 0x1;
+	while (imgsensor.i2c_write_id ++ != 0xff) {
+	    do {
+	        *sensor_id = return_sensor_id();
+	        if (*sensor_id == imgsensor_info.sensor_id) {
+				LOG_DBG("i2c write id: 0x%x, ReadOut sensor id: 0x%x, imgsensor_info.sensor_id:0x%x.\n", imgsensor.i2c_write_id,*sensor_id,imgsensor_info.sensor_id);	
+	            return ERROR_NONE;
+	        }
+			LOG_ERR("Read sensor id fail, i2c write id: 0x%x, ReadOut sensor id: 0x%x, imgsensor_info.sensor_id:0x%x.\n", imgsensor.i2c_write_id,*sensor_id,imgsensor_info.sensor_id);	
+	        retry--;
+	    } while(retry > 0);
+	    //i++;
+	    retry = 1;
+	}
+#else
 	while (imgsensor_info.i2c_addr_table[i] != 0xff) {
 		spin_lock(&imgsensor_drv_lock);
 		imgsensor.i2c_write_id = imgsensor_info.i2c_addr_table[i];
@@ -2140,6 +2218,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 		do {
 		    *sensor_id = return_sensor_id();
 		    if (*sensor_id == imgsensor_info.sensor_id) {
+		        hardwareinfo_set_prop(HARDWARE_BACK_CAM_MOUDULE_ID,"sunny");
 		        imgSensorSetEepromData(&sensor_eeprom_data);
 		        LOG_DBG("i2c write id: 0x%x, ReadOut sensor id: 0x%x, imgsensor_info.sensor_id:0x%x.\n", imgsensor.i2c_write_id,*sensor_id,imgsensor_info.sensor_id);
 		        return ERROR_NONE;
@@ -2150,7 +2229,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 
 		retry = 1;
 	}
-
+#endif
 	if (*sensor_id != imgsensor_info.sensor_id) {
 	    // if Sensor ID is not correct, Must set *sensor_id to 0xFFFFFFFF
 	    *sensor_id = 0xFFFFFFFF;
@@ -3080,8 +3159,31 @@ static kal_uint32 set_test_pattern_mode(kal_bool enable)
 
 static kal_uint32 get_sensor_temperature(void)
 {
+#if 0
+	UINT8 temperature;
+	INT32 temperature_convert;
+
+	/*TEMP_SEN_CTL */
+	write_cmos_sensor(0x0138, 0x01);
+	temperature = read_cmos_sensor(0x013a);
+
+	if (temperature >= 0x0 && temperature <= 0x4F)
+		temperature_convert = temperature;
+	else if (temperature >= 0x50 && temperature <= 0x7F)
+		temperature_convert = 80;
+	else if (temperature >= 0x80 && temperature <= 0xEC)
+		temperature_convert = -20;
+	else
+		temperature_convert = (INT8) temperature;
+
+		LOG_DBG("temp_c(%d), read_reg(%d)\n",
+			temperature_convert, temperature);
+
+	return temperature_convert;
+#else
 	INT32 temperature_convert = 20;
 	return temperature_convert;
+#endif
 }
 
 static void check_streamoff(void)
@@ -3285,6 +3387,14 @@ static kal_uint32 feature_control(MSDK_SENSOR_FEATURE_ENUM feature_id,
 			break;
 		}
 		break;
+#if 0 /* fix me */
+	case SENSOR_FEATURE_GET_PDAF_DATA:
+		LOG_DBG("SENSOR_FEATURE_GET_PDAF_DATA\n");
+		CACTUS_S5K3L8_SUNNY_read_eeprom((kal_uint16)(*feature_data),
+			(char *)(uintptr_t)(*(feature_data+1)),
+			(kal_uint32)(*(feature_data+2)));
+		break;
+#endif
 	case SENSOR_FEATURE_GET_TEMPERATURE_VALUE:
 		*feature_return_para_i32 = get_sensor_temperature();
 		*feature_para_len = 4;

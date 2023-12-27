@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016 MediaTek Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -51,6 +52,7 @@ struct alspshub_ipi_data {
 	struct timer_list timer_psdata;  /* ps polling timer */
 	struct work_struct report_psdata;
 	atomic_t delay_psdata;
+
 };
 
 static struct alspshub_ipi_data *obj_ipi_data;
@@ -750,7 +752,7 @@ static int ps_enable_nodata(int en)
 	struct alspshub_ipi_data *obj = obj_ipi_data;
 
 	ps_cancel_enable = en;
-	pr_debug("obj_ipi_data als enable value = %d\n", en);
+	pr_debug("ps_enable_nodata ps enable value = %d\n", en);
 	if (en == true)
 		WRITE_ONCE(obj->ps_android_enable, true);
 	else
@@ -761,10 +763,11 @@ static int ps_enable_nodata(int en)
 		pr_err("als_enable_nodata is failed!!\n");
 		return -1;
 	}
-
-	if (en == true) {
+	if(en == true)
 		mod_timer(&obj->timer_psdata,jiffies + atomic_read(&obj->delay_psdata) /(1000 / HZ));
-	} else {
+	else
+	{
+		pr_debug("ps_enable_nodata ps disable");
 		smp_mb();
 		del_timer_sync(&obj->timer_psdata);
 		smp_mb();
@@ -877,27 +880,27 @@ static void psdata_work_func(struct work_struct *work)
 	int32_t psrawdata = 0;
 	int err = 0;
 
+	pr_debug("psdata_work_func !!\n");
 	err = pshub_factory_get_raw_data(&psrawdata);
 	err = sensor_set_cmd_to_hub(ID_PROXIMITY,CUST_ACTION_SET_CALI, &cxt->ps_cali);
-	pr_debug("%s data=%d,err=%d!!\n", __func__, psrawdata, err);
+	pr_debug("psdata_work_func data=%d,err=%d!!\n",psrawdata,err);
+	//pshub_factory_set_threshold();
 
-	smp_mb();
+	smp_mb();/* for memory barrier */
 	del_timer_sync(&cxt->timer_psdata);
-	smp_mb();
-	if (ps_cancel_enable == true) {
-		mod_timer(&cxt->timer_psdata, jiffies + atomic_read(&cxt->delay_psdata) / (1000 / HZ));
-	}
+	smp_mb();/* for memory barrier */
+	if(ps_cancel_enable == 1)
+		mod_timer(&cxt->timer_psdata,jiffies + atomic_read(&cxt->delay_psdata) /(1000 / HZ));
 }
 
 static void psdata_poll(unsigned long data)
 {
 	struct alspshub_ipi_data *obj = (struct alspshub_ipi_data *)data;
 
-	pr_debug("%s!!\n", __func__);
+	pr_debug("psdata_poll !!\n");
 
-	if (obj != NULL) {
+	if (obj != NULL)
 		schedule_work(&obj->report_psdata);
-	}
 }
 
 
@@ -947,7 +950,7 @@ static int alspshub_probe(struct platform_device *pdev)
 	WRITE_ONCE(obj->ps_factory_enable, false);
 	WRITE_ONCE(obj->ps_android_enable, false);
 
-	atomic_set(&obj->delay_psdata, 200); /* 5Hz,  set work queue delay time 200ms */
+	atomic_set(&obj->delay_psdata,200); /* 5Hz,  set work queue delay time 200ms */
 	INIT_WORK(&obj->report_psdata, psdata_work_func);
 	init_timer(&obj->timer_psdata);
 	obj->timer_psdata.expires =

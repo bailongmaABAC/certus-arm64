@@ -45,7 +45,7 @@ static int arm_enter_idle_state(struct cpuidle_device *dev,
 	return CPU_PM_CPU_IDLE_ENTER(arm_cpuidle_suspend, idx);
 }
 
-static struct cpuidle_driver arm_idle_driver = {
+static struct cpuidle_driver arm_idle_driver __initdata = {
 	.name = "arm_idle",
 	.owner = THIS_MODULE,
 	/*
@@ -128,14 +128,14 @@ static int __init arm_idle_init(void)
 
 		if (ret) {
 			pr_err("CPU %d failed to init idle CPU ops\n", cpu);
-			goto out_fail;
+			goto out_unregister_drv;
 		}
 
 		dev = kzalloc(sizeof(*dev), GFP_KERNEL);
 		if (!dev) {
 			pr_err("Failed to allocate cpuidle device\n");
 			ret = -ENOMEM;
-			goto out_fail;
+			goto out_unregister_drv;
 		}
 		dev->cpu = cpu;
 
@@ -143,8 +143,7 @@ static int __init arm_idle_init(void)
 		if (ret) {
 			pr_err("Failed to register cpuidle device for CPU %d\n",
 			       cpu);
-			kfree(dev);
-			goto out_fail;
+			goto out_kfree_dev;
 		}
 	}
 
@@ -159,11 +158,12 @@ out_kfree_drv:
 out_fail:
 	while (--cpu >= 0) {
 		dev = per_cpu(cpuidle_devices, cpu);
+		drv = cpuidle_get_cpu_driver(dev);
 		cpuidle_unregister_device(dev);
+		cpuidle_unregister_driver(drv);
 		kfree(dev);
+		kfree(drv);
 	}
-
-	cpuidle_unregister_driver(drv);
 
 	return ret;
 }

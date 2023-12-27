@@ -29,9 +29,6 @@ enum LCM_DSI_MODE_CON lcm_dsi_mode;
 #define LCD_HW_ID_STATUS_ERROR  0x03
 
 struct LCM_DRIVER *lcm_driver_list[] = {
-#if defined(NT36672AH_HDP_DSI_VDO_TCL_CSOT)
-	&nt36672ah_hdp_dsi_vdo_tcl_csot_lcm_drv,
-#endif
 #if defined(OTM1284A_HD720_DSI_VDO_TM)
 	&otm1284a_hd720_dsi_vdo_tm_lcm_drv,
 #endif
@@ -954,14 +951,6 @@ struct LCM_DRIVER *lcm_driver_list[] = {
 	&nt35695_fhd_dsi_vdo_truly_rt5081_hdp_1560_lcm_drv,
 #endif
 
-#if defined(NT35695_FHD_DSI_VDO_TRULY_RT5081_HDP_1680)
-	&nt35695_fhd_dsi_vdo_truly_rt5081_hdp_1680_lcm_drv,
-#endif
-
-#if defined(NT35695_FHD_DSI_VDO_TRULY_RT5081_HDP_20_9)
-	&nt35695_fhd_dsi_vdo_truly_rt5081_hdp_20_9_lcm_drv,
-#endif
-
 #if defined(NT35695_FHD_DSI_VDO_TRULY_RT5081_720P)
 	&nt35695_fhd_dsi_vdo_truly_rt5081_720p_lcm_drv,
 #endif
@@ -1043,11 +1032,6 @@ struct LCM_DRIVER *lcm_driver_list[] = {
 #if defined(NT35695B_FHD_DSI_CMD_AUO_RT4801)
 	&nt35695B_fhd_dsi_cmd_auo_rt4801_lcm_drv,
 #endif
-
-#if defined(NT35695B_FHD_DSI_CMD_AUO_NT50358_HDP)
-	&nt35695B_fhd_dsi_cmd_auo_nt50358_hdp_lcm_drv,
-#endif
-
 #if defined(NT35695B_FHD_DSI_CMD_AUO_RT5081)
 	&nt35695B_fhd_dsi_cmd_auo_rt5081_lcm_drv,
 #endif
@@ -1084,14 +1068,6 @@ struct LCM_DRIVER *lcm_driver_list[] = {
 
 #if defined(NT35695B_FHD_DSI_VDO_AUO_RT5081_HDP_1560)
 	&nt35695B_fhd_dsi_vdo_auo_rt5081_hdp_1560_lcm_drv,
-#endif
-
-#if defined(NT35695B_FHD_DSI_VDO_AUO_RT5081_HDP_1680)
-	&nt35695B_fhd_dsi_vdo_auo_rt5081_hdp_1680_lcm_drv,
-#endif
-
-#if defined(NT35695B_FHD_DSI_VDO_AUO_RT5081_HDP_20_9)
-	&nt35695B_fhd_dsi_vdo_auo_rt5081_hdp_20_9_lcm_drv,
 #endif
 
 #if defined(CLAA101FP01_DSI_VDO)
@@ -1152,6 +1128,7 @@ struct LCM_DRIVER *lcm_driver_list[] = {
 #if defined(ILI9881H_HDP_DSI_VDO_ILITEK_RT5081_19_9)
 	&ili9881h_hdp_dsi_vdo_ilitek_rt5081_19_9_lcm_drv,
 #endif
+
 #if defined(HX83112B_FHDP_DSI_CMD_AUO_RT4801)
 	&hx83112b_fhdp_dsi_cmd_auo_rt4801_lcm_drv,
 #endif
@@ -1160,26 +1137,14 @@ struct LCM_DRIVER *lcm_driver_list[] = {
 	&hx83112b_fhdp_dsi_cmd_fhd_auo_rt4801_lcm_drv,
 #endif
 
-#if defined(FT8201_WXGA_VDO_INCELL_BOE)
-	&ft8201_wxga_vdo_incell_boe_lcm_drv,
-#endif
-
-#if defined(NT51021H_WUXGA_VDO_ONCELL_BOE)
-	&nt51021h_wuxga_vdo_oncell_boe_lcm_drv,
-#endif
-
 #if defined(HX83112B_FHDP_DSI_VDO_AUO_RT4801)
 	&hx83112b_fhdp_dsi_vdo_auo_rt4801_lcm_drv,
-#endif
-#if defined(HX83112B_FHDP_DSI_CMD_AUO_RT5081)
-	&hx83112b_fhdp_dsi_cmd_auo_rt5081_lcm_drv,
 #endif
 #if defined(SOFEG01_FHDPLUS_DSI_CMD_SAMSUNG)
 	&sofeg01_fhdplus_dsi_cmd_samsung_lcm_drv,
 #endif
-
-#if defined(OPPO_TIANMA_TD4310_FHDP_DSI_VDO_RT5081)
-	&oppo_tianma_td4310_fhdp_dsi_vdo_rt5081_lcm_drv,
+#if defined(VIRTUAL_DSI_VDO_DEFAULT)
+	 &virtual_dsi_vdo_default,
 #endif
 };
 
@@ -1245,14 +1210,6 @@ unsigned char lcm_name_list[][128] = {
 
 #if defined(NT35695B_FHD_DSI_VDO_AUO_RT5081_HDP)
 	"nt35695B_fhd_dsi_vdo_auo_rt5081_hdp_drv",
-#endif
-
-#if defined(NT35695B_FHD_DSI_CMD_TRULY_RT5081_720P)
-	"nt35695B_fhd_dsi_cmd_truly_rt5081_720p_lcm_drv",
-#endif
-
-#if defined(OPPO_TIANMA_TD4310_FHDP_DSI_VDO_RT5081)
-	"oppo_tianma_td4310_fhdp_dsi_vdo_rt5081_drv",
 #endif
 };
 

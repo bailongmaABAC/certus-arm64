@@ -1699,41 +1699,11 @@ static const struct block_device_operations floppy_fops = {
 	.check_events	= amiga_check_events,
 };
 
-static struct gendisk *fd_alloc_disk(int drive)
-{
-	struct gendisk *disk;
-
-	disk = alloc_disk(1);
-	if (!disk)
-		goto out;
-
-	disk->queue = blk_init_queue(do_fd_request, &amiflop_lock);
-	if (IS_ERR(disk->queue)) {
-		disk->queue = NULL;
-		goto out_put_disk;
-	}
-
-	unit[drive].trackbuf = kmalloc(FLOPPY_MAX_SECTORS * 512, GFP_KERNEL);
-	if (!unit[drive].trackbuf)
-		goto out_cleanup_queue;
-
-	return disk;
-
-out_cleanup_queue:
-	blk_cleanup_queue(disk->queue);
-	disk->queue = NULL;
-out_put_disk:
-	put_disk(disk);
-out:
-	unit[drive].type->code = FD_NODRIVE;
-	return NULL;
-}
-
 static int __init fd_probe_drives(void)
 {
 	int drive,drives,nomem;
 
-	pr_info("FD: probing units\nfound");
+	printk(KERN_INFO "FD: probing units\nfound ");
 	drives=0;
 	nomem=0;
 	for(drive=0;drive<FD_MAX_UNITS;drive++) {

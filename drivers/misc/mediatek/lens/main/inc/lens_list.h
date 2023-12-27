@@ -18,6 +18,7 @@
 
 extern void MAIN2AF_PowerDown(void);
 
+/* cereus lens */
 #define CEREUS_DW9714AF_OFILM_SetI2Cclient CEREUS_DW9714AF_OFILM_SetI2Cclient_Main
 #define CEREUS_DW9714AF_OFILM_Ioctl CEREUS_DW9714AF_OFILM_Ioctl_Main
 #define CEREUS_DW9714AF_OFILM_Release CEREUS_DW9714AF_OFILM_Release_Main
@@ -151,17 +152,6 @@ extern long DW9714AF_Ioctl(struct file *a_pstFile, unsigned int a_u4Command,
 			   unsigned long a_u4Param);
 extern int DW9714AF_Release(struct inode *a_pstInode, struct file *a_pstFile);
 extern int DW9714AF_GetFileName(unsigned char *pFileName);
-
-#define DW9763AF_SetI2Cclient DW9763AF_SetI2Cclient_Main
-#define DW9763AF_Ioctl DW9763AF_Ioctl_Main
-#define DW9763AF_Release DW9763AF_Release_Main
-#define DW9763AF_GetFileName DW9763AF_GetFileName_Main
-extern int DW9763AF_SetI2Cclient(struct i2c_client *pstAF_I2Cclient,
-				 spinlock_t *pAF_SpinLock, int *pAF_Opened);
-extern long DW9763AF_Ioctl(struct file *a_pstFile, unsigned int a_u4Command,
-			   unsigned long a_u4Param);
-extern int DW9763AF_Release(struct inode *a_pstInode, struct file *a_pstFile);
-extern int DW9763AF_GetFileName(unsigned char *pFileName);
 
 #define FP5510E2AF_SetI2Cclient FP5510E2AF_SetI2Cclient_Main
 #define FP5510E2AF_Ioctl FP5510E2AF_Ioctl_Main
@@ -354,6 +344,20 @@ extern int LC898217AFC_Release(struct inode *a_pstInode,
 extern int LC898217AFC_PowerDown(struct i2c_client *pstAF_I2Cclient,
 				int *pAF_Opened);
 extern int LC898217AFC_GetFileName(unsigned char *pFileName);
+
+#define LC898229AF_SetI2Cclient LC898229AF_SetI2Cclient_Main
+#define LC898229AF_Ioctl LC898229AF_Ioctl_Main
+#define LC898229AF_Release LC898229AF_Release_Main
+#define LC898229AF_PowerDown LC898229AF_PowerDown_Main
+#define LC898229AF_GetFileName LC898229AF_GetFileName_Main
+extern int LC898229AF_SetI2Cclient(struct i2c_client *pstAF_I2Cclient,
+				   spinlock_t *pAF_SpinLock, int *pAF_Opened);
+extern long LC898229AF_Ioctl(struct file *a_pstFile, unsigned int a_u4Command,
+			     unsigned long a_u4Param);
+extern int LC898229AF_Release(struct inode *a_pstInode, struct file *a_pstFile);
+extern int LC898229AF_PowerDown(struct i2c_client *pstAF_I2Cclient,
+				int *pAF_Opened);
+extern int LC898229AF_GetFileName(unsigned char *pFileName);
 
 #if 0
 #define AD5820AF_SetI2Cclient AD5820AF_SetI2Cclient_Main

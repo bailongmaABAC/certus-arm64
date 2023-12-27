@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 MediaTek Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -112,6 +113,7 @@ struct charger_ops {
 
 	/* enable term */
 	int (*enable_termination)(struct charger_device *dev, bool en);
+    int (*enable_rst)(struct charger_device *dev, bool en);
 
 	/* direct charging */
 	int (*enable_direct_charging)(struct charger_device *dev, bool en);
@@ -133,7 +135,7 @@ struct charger_ops {
 	/* reset EOC state */
 	int (*reset_eoc_state)(struct charger_device *dev);
 
-	int (*safety_check)(struct charger_device *dev, u32 polling_ieoc);
+	int (*safety_check)(struct charger_device *dev);
 
 	int (*is_charging_done)(struct charger_device *dev, bool *done);
 	int (*set_pe20_efficiency_table)(struct charger_device *dev);
@@ -143,7 +145,6 @@ struct charger_ops {
 		       int *min, int *max);
 	int (*get_vbus_adc)(struct charger_device *dev, u32 *vbus);
 	int (*get_ibus_adc)(struct charger_device *dev, u32 *ibus);
-	int (*get_ibat_adc)(struct charger_device *dev, u32 *ibat);
 	int (*get_tchg_adc)(struct charger_device *dev, int *tchg_min,
 		int *tchg_max);
 	int (*get_zcv)(struct charger_device *dev, u32 *uV);
@@ -155,6 +156,7 @@ struct charger_ops {
 	int (*enable_usbid_floating)(struct charger_device *dev, bool en);
 	int (*enable_hidden_mode)(struct charger_device *dev, bool en);
 	int (*get_ctd_dischg_status)(struct charger_device *dev, u8 *status);
+	int (*enable_hz)(struct charger_device *, bool en);
 };
 
 static inline void *charger_dev_get_drvdata(
@@ -251,7 +253,9 @@ extern int charger_dev_run_aicl(
 extern int charger_dev_reset_eoc_state(
 	struct charger_device *charger_dev);
 extern int charger_dev_safety_check(
-	struct charger_device *charger_dev, u32 polling_ieoc);
+	struct charger_device *charger_dev);
+extern int charger_dev_enable_hz(
+	struct charger_device *charger_dev, bool en);
 
 /* PE+/PE+2.0 */
 extern int charger_dev_send_ta_current_pattern(
@@ -281,8 +285,6 @@ extern int charger_dev_get_vbus(
 	struct charger_device *charger_dev, u32 *vbus);
 extern int charger_dev_get_ibus(
 	struct charger_device *charger_dev, u32 *ibus);
-extern int charger_dev_get_ibat(
-	struct charger_device *charger_dev, u32 *ibat);
 extern int charger_dev_get_temperature(
 	struct charger_device *charger_dev, int *tchg_min,
 		int *tchg_max);

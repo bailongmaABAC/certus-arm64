@@ -17,71 +17,56 @@
 /**************************************************
  * MT6762M segment_1 : GPU DVFS OPP table Setting
  **************************************************/
-#define SEG1_GPU_DVFS_FREQ0			(900000)/* KHz */
+#define SEG1_GPU_DVFS_FREQ0			(376000)/* KHz */
 
-#define SEG1_GPU_DVFS_VOLT0			(90500)	/* mV x 100 */
+#define SEG1_GPU_DVFS_VOLT0			(65000)	/* mV x 100 */
 
-#define SEG1_GPU_DVFS_VSRAM0			(98500)/* mV x 100 */
+#define SEG1_GPU_DVFS_VSRAM0			(87500)/* mV x 100 */
 
 /**************************************************
  * MT6762 segment_2 : GPU DVFS OPP table Setting
  **************************************************/
-#define SEG2_GPU_DVFS_FREQ0			(900000)/* KHz */
-#define SEG2_GPU_DVFS_FREQ1			(800000)/* KHz */
-#define SEG2_GPU_DVFS_FREQ2			(730000)/* KHz */
+#define SEG2_GPU_DVFS_FREQ0			(650000)/* KHz */
+#define SEG2_GPU_DVFS_FREQ1			(500000)/* KHz */
+#define SEG2_GPU_DVFS_FREQ2			(400000)/* KHz */
 
-#define SEG2_GPU_DVFS_VOLT0			(90500)	/* mV x 100 */
-#define SEG2_GPU_DVFS_VOLT1			(90500)	/* mV x 100 */
-#define SEG2_GPU_DVFS_VOLT2			(90500)	/* mV x 100 */
+#define SEG2_GPU_DVFS_VOLT0			(80000)	/* mV x 100 */
+#define SEG2_GPU_DVFS_VOLT1			(70000)	/* mV x 100 */
+#define SEG2_GPU_DVFS_VOLT2			(65000)	/* mV x 100 */
 
-#define SEG2_GPU_DVFS_VSRAM0			(98500)	/* mV x 100 */
-#define SEG2_GPU_DVFS_VSRAM1			(98500)	/* mV x 100 */
-#define SEG2_GPU_DVFS_VSRAM2			(98500)	/* mV x 100 */
+#define SEG2_GPU_DVFS_VSRAM0			(87500)	/* mV x 100 */
+#define SEG2_GPU_DVFS_VSRAM1			(87500)	/* mV x 100 */
+#define SEG2_GPU_DVFS_VSRAM2			(87500)	/* mV x 100 */
 
 /**************************************************
  * MT6765 segment_3 : GPU DVFS OPP table Setting
  **************************************************/
-#define SEG3_GPU_DVFS_FREQ0			(900000)	/* KHz */
-#define SEG3_GPU_DVFS_FREQ1			(800000)	/* KHz */
-#define SEG3_GPU_DVFS_FREQ2			(730000)	/* KHz */
+#define SEG3_GPU_DVFS_FREQ0			(680000)	/* KHz */
+#define SEG3_GPU_DVFS_FREQ1			(500000)	/* KHz */
+#define SEG3_GPU_DVFS_FREQ2			(400000)	/* KHz */
 
-#define SEG3_GPU_DVFS_VOLT0			(90500)		/* mV x 100 */
-#define SEG3_GPU_DVFS_VOLT1			(90500)		/* mV x 100 */
-#define SEG3_GPU_DVFS_VOLT2			(90500)		/* mV x 100 */
+#define SEG3_GPU_DVFS_VOLT0			(80000)		/* mV x 100 */
+#define SEG3_GPU_DVFS_VOLT1			(70000)		/* mV x 100 */
+#define SEG3_GPU_DVFS_VOLT2			(65000)		/* mV x 100 */
 
-#define SEG3_GPU_DVFS_VSRAM0			(98500)		/* mV x 100 */
-#define SEG3_GPU_DVFS_VSRAM1			(98500)		/* mV x 100 */
-#define SEG3_GPU_DVFS_VSRAM2			(98500)		/* mV x 100 */
+#define SEG3_GPU_DVFS_VSRAM0			(87500)		/* mV x 100 */
+#define SEG3_GPU_DVFS_VSRAM1			(87500)		/* mV x 100 */
+#define SEG3_GPU_DVFS_VSRAM2			(87500)		/* mV x 100 */
 
 /**************************************************
  * MT6765T segment_4 : GPU DVFS OPP table Setting
  **************************************************/
-#define SEG4_GPU_DVFS_FREQ0			(900000)	/* KHz */
-#define SEG4_GPU_DVFS_FREQ1			(800000)	/* KHz */
-#define SEG4_GPU_DVFS_FREQ2			(730000)	/* KHz */
+#define SEG4_GPU_DVFS_FREQ0			(730000)	/* KHz */
+#define SEG4_GPU_DVFS_FREQ1			(500000)	/* KHz */
+#define SEG4_GPU_DVFS_FREQ2			(400000)	/* KHz */
 
-#define SEG4_GPU_DVFS_VOLT0			(90500)		/* mV x 100 */
-#define SEG4_GPU_DVFS_VOLT1			(90500)		/* mV x 100 */
-#define SEG4_GPU_DVFS_VOLT2			(90500)		/* mV x 100 */
+#define SEG4_GPU_DVFS_VOLT0			(80000)		/* mV x 100 */
+#define SEG4_GPU_DVFS_VOLT1			(70000)		/* mV x 100 */
+#define SEG4_GPU_DVFS_VOLT2			(65000)		/* mV x 100 */
 
-#define SEG4_GPU_DVFS_VSRAM0			(98500)		/* mV x 100 */
-#define SEG4_GPU_DVFS_VSRAM1			(98500)		/* mV x 100 */
-#define SEG4_GPU_DVFS_VSRAM2			(98500)		/* mV x 100 */
-
-/**************************************************
- * MT6762D segment_5 : GPU DVFS OPP table Setting
- **************************************************/
-#define SEG5_GPU_DVFS_FREQ0			(900000)/* KHz */
-#define SEG5_GPU_DVFS_FREQ1			(800000)/* KHz */
-#define SEG5_GPU_DVFS_FREQ2			(730000)/* KHz */
-
-#define SEG5_GPU_DVFS_VOLT0			(90500)	/* mV x 100 */
-#define SEG5_GPU_DVFS_VOLT1			(90500)	/* mV x 100 */
-#define SEG5_GPU_DVFS_VOLT2			(90500)	/* mV x 100 */
-
-#define SEG5_GPU_DVFS_VSRAM0			(98500)	/* mV x 100 */
-#define SEG5_GPU_DVFS_VSRAM1			(98500)	/* mV x 100 */
-#define SEG5_GPU_DVFS_VSRAM2			(98500)	/* mV x 100 */
+#define SEG4_GPU_DVFS_VSRAM0			(87500)		/* mV x 100 */
+#define SEG4_GPU_DVFS_VSRAM1			(87500)		/* mV x 100 */
+#define SEG4_GPU_DVFS_VSRAM2			(87500)		/* mV x 100 */
 
 /**************************************************
  * PMIC Setting
@@ -158,21 +143,21 @@
  * Battery Over Current Protect
  **************************************************/
 #ifdef MT_GPUFREQ_BATT_OC_PROTECT
-#define MT_GPUFREQ_BATT_OC_LIMIT_FREQ			(999000)/* KHz */
+#define MT_GPUFREQ_BATT_OC_LIMIT_FREQ			(485000)/* KHz */
 #endif
 
 /**************************************************
  * Battery Percentage Protect
  **************************************************/
 #ifdef MT_GPUFREQ_BATT_PERCENT_PROTECT
-#define MT_GPUFREQ_BATT_PERCENT_LIMIT_FREQ		(999000)/* KHz */
+#define MT_GPUFREQ_BATT_PERCENT_LIMIT_FREQ		(485000)/* KHz */
 #endif
 
 /**************************************************
  * Low Battery Volume Protect
  **************************************************/
 #ifdef MT_GPUFREQ_LOW_BATT_VOLT_PROTECT
-#define MT_GPUFREQ_LOW_BATT_VOLT_LIMIT_FREQ		(999000)/* KHz */
+#define MT_GPUFREQ_LOW_BATT_VOLT_LIMIT_FREQ		(485000)/* KHz */
 #endif
 
 /**************************************************
@@ -231,7 +216,6 @@ enum g_segment_id_enum {
 	MT6762_SEGMENT,
 	MT6765_SEGMENT,
 	MT6765T_SEGMENT,
-	MT6762D_SEGMENT,
 };
 enum g_post_divider_power_enum  {
 	POST_DIV2 = 1,

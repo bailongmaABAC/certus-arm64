@@ -89,7 +89,7 @@
 #define FULL_TRACKING_BAT_INT2_MULTIPLY 6
 
 /* pre tracking */
-#define FG_PRE_TRACKING_EN 1
+#define FG_PRE_TRACKING_EN 1 
 #define VBAT2_DET_TIME 5
 #define VBAT2_DET_COUNTER 6
 #define VBAT2_DET_VOLTAGE1	34500
@@ -108,8 +108,6 @@
 #define AGING1_UPDATE_SOC 30
 #define AGING1_LOAD_SOC 70
 #define AGING_TEMP_DIFF 10
-#define AGING_TEMP_LOW_LIMIT 15
-#define AGING_TEMP_HIGH_LIMIT 50
 #define AGING_100_EN 1
 
 /* Aging Compensation 2*/
@@ -117,18 +115,6 @@
 
 /* Aging Compensation 3*/
 #define AGING_THIRD_EN 1
-#define AGING_4_EN 1
-#define AGING_5_EN 1
-#define AGING_6_EN 1
-
-#define AGING4_UPDATE_SOC 40
-#define AGING4_LOAD_SOC 70
-
-#define AGING5_UPDATE_SOC 30
-#define AGING5_LOAD_SOC 70
-
-#define AGING6_UPDATE_SOC 30
-#define AGING6_LOAD_SOC 70
 
 /* threshold */
 #define HWOCV_SWOCV_DIFF	300
@@ -178,7 +164,7 @@
 #define ZCV_CAR_GAP_PERCENTAGE 5
 
 /* Additional battery table */
-#define ADDITIONAL_BATTERY_TABLE_EN 1
+#define ADDITIONAL_BATTERY_TABLE_EN 1 
 
 #define DC_RATIO_SEL	5
 #define DC_R_CNT	1000	/* if set 0, dcr_start will not be 1*/
@@ -263,9 +249,6 @@
 #define UI_LOW_LIMIT_VTH4 34500
 
 #define UI_LOW_LIMIT_TIME 99999
-
-#define MOVING_BATTEMP_EN 1
-#define MOVING_BATTEMP_THR 20
 
 
 #endif

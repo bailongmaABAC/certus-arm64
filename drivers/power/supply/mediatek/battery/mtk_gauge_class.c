@@ -294,25 +294,6 @@ int gauge_dev_get_zcv(
 	return ret;
 }
 
-int gauge_dev_notify_event(
-	struct gauge_device *gauge_dev, enum gauge_event evt, int value)
-{
-	int ret = -ENOTSUPP;
-
-	if (gauge_dev == NULL)
-		return ret;
-
-	gauge_lock(gauge_dev);
-	if (gauge_dev != NULL && gauge_dev->ops != NULL &&
-		gauge_dev->ops->gauge_notify_event)
-		ret =
-			gauge_dev->ops->gauge_notify_event(
-				gauge_dev, evt, value);
-	gauge_unlock(gauge_dev);
-
-	return ret;
-}
-
 int gauge_dev_is_gauge_initialized(
 	struct gauge_device *gauge_dev, int *init)
 {
@@ -978,7 +959,7 @@ struct gauge_device *gauge_device_register(const char *name,
 	gauge_dev->dev.class = gauge_class;
 	gauge_dev->dev.parent = parent;
 	gauge_dev->dev.release = gauge_device_release;
-	dev_set_name(&gauge_dev->dev, "%s", name);
+	dev_set_name(&gauge_dev->dev, name);
 	dev_set_drvdata(&gauge_dev->dev, devdata);
 
 	/* Copy properties */

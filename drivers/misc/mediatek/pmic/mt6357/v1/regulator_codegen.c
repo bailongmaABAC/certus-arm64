@@ -19,9 +19,21 @@
 #include "include/pmic_api_buck.h"
 #include "include/regulator_codegen.h"
 
+static const int vfe28_voltages[] = {
+	2800000,
+};
+
 static const int vxo22_voltages[] = {
 	2200000,
 	2400000,
+};
+
+static const int vrf18_voltages[] = {
+	1800000,
+};
+
+static const int vrf12_voltages[] = {
+	1200000,
 };
 
 static const int vefuse_voltages[] = {
@@ -47,6 +59,14 @@ static const int vcn33_wifi_voltages[] = {
 	3500000,
 };
 
+static const int vcn28_voltages[] = {
+	2800000,
+};
+
+static const int vcn18_voltages[] = {
+	1800000,
+};
+
 static const int vcama_voltages[] = {
 	2500000,
 	2800000,
@@ -61,9 +81,29 @@ static const int vcamd_voltages[] = {
 	1800000,
 };
 
+static const int vcamio_voltages[] = {
+	1800000,
+};
+
 static const int vldo28_voltages[] = {
 	2800000,
 	3000000,
+};
+
+static const int vaux18_voltages[] = {
+	1800000,
+};
+
+static const int vaud28_voltages[] = {
+	2800000,
+};
+
+static const int vio28_voltages[] = {
+	2800000,
+};
+
+static const int vio18_voltages[] = {
+	1800000,
 };
 
 static const int vdram_voltages[] = {
@@ -145,7 +185,7 @@ static const int vcama_idx[] = {
 };
 
 static const int vcamd_idx[] = {
-	4, 5, 6, 7, 9, 12,
+	4, 5, 6, 7, 9, 10,
 };
 
 static const int vldo28_idx[] = {
@@ -3855,7 +3895,7 @@ struct mtk_regulator mt_bucks[] = {
 	REGULAR_VOLTAGE_REGULATOR_BUCK_GEN(vmodem, buck,
 		500000, 1193750, 6250, 0, BUCK_VOL_EN, 1),
 	REGULAR_VOLTAGE_REGULATOR_BUCK_GEN(vcore, buck,
-		518750, 1312500, 6250, 0, BUCK_VOL_EN, 1),
+		518750, 1193750, 6250, 0, BUCK_VOL_EN, 1),
 	REGULAR_VOLTAGE_REGULATOR_BUCK_GEN(vproc, buck,
 		518750, 1312500, 6250, 0, BUCK_VOL_EN, 1),
 	REGULAR_VOLTAGE_REGULATOR_BUCK_GEN(vpa, buck,

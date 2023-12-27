@@ -678,10 +678,8 @@ static int _mtkthermal_tz_read(struct seq_file *m, void *v)
 			int fake_temp = 0;
 
 			tzdata = tz->devdata;
-			if (!tzdata) {
+			if (!tzdata)
 				WARN_ON_ONCE(1);
-				return 0;
-			}
 
 #if (MAX_STEP_MA_LEN > 1)
 			mutex_lock(&tzdata->ma_lock);
@@ -747,10 +745,8 @@ static ssize_t _mtkthermal_tz_write
 			struct mtk_thermal_tz_data *tzdata = NULL;
 
 			tzdata = tz->devdata;
-			if (!tzdata) {
+			if (!tzdata)
 				WARN_ON_ONCE(1);
-				return -EINVAL;
-			}
 
 			/* THRML_ERROR_LOG(
 			 * "%s trailing=%s\n", __func__, trailing);
@@ -806,10 +802,8 @@ static ssize_t _mtkthermal_tz_write
 			struct mtk_thermal_tz_data *tzdata = NULL;
 
 			tzdata = tz->devdata;
-			if (!tzdata) {
+			if (!tzdata)
 				WARN_ON_ONCE(1);
-				return -EINVAL;
-			}
 
 			mutex_lock(&tzdata->ma_lock);
 			tzdata->fake_temp = (long)arg_val;

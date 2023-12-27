@@ -26,6 +26,9 @@
 #include "cactus_s5k5e8yx_ofilmmipiraw_Sensor.h"
 #include "cam_cal_define.h"
 
+#include <linux/hardware_info.h>
+extern int hardwareinfo_set_prop(int cmd, const char *name);
+
 /****************************Modify following Strings for debug****************************/
 #define PFX "cactus_s5k5e8yx_ofilm_camera_sensor"
 #define LOG_DBG(format, args...)    pr_debug(PFX "[%s] " format, __FUNCTION__, ##args)
@@ -1787,6 +1790,7 @@ static kal_uint32 get_imgsensor_id(UINT32 *sensor_id)
 			*sensor_id = return_sensor_id();
 			if (*sensor_id == imgsensor_info.sensor_id) {				
 				LOG_DBG("i2c write id: 0x%x, sensor id: 0x%x\n", imgsensor.i2c_write_id,*sensor_id);	    
+				hardwareinfo_set_prop(HARDWARE_FRONT_CAM_MOUDULE_ID,"oflim");
 				imgSensorSetEepromData(&sensor_eeprom_data);
 				return ERROR_NONE;
 			}

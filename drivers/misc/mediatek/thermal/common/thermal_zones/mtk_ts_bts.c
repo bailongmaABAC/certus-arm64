@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 MediaTek Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -33,6 +34,10 @@
 #include <linux/uidgid.h>
 #include <tmp_bts.h>
 #include <linux/slab.h>
+
+extern void thermal_ccc_identify(void);
+extern int aptemp_return_value;
+int notify_flag = 0;
 
 /*=============================================================
  *Weak functions
@@ -664,7 +669,6 @@ static int get_hw_bts_temp(void)
 #else
 	ret = ret * 1500 / 4096;
 #endif
-	/* ret = ret*1800/4096;//82's ADC power */
 	mtkts_bts_dprintk("APtery output mV = %d\n", ret);
 	output = mtk_ts_bts_volt_to_temp(ret);
 	mtkts_bts_dprintk("BTS output temperature = %d\n", output);
@@ -717,6 +721,27 @@ static int mtkts_bts_get_temp(struct thermal_zone_device *thermal, int *t)
 		thermal->polling_delay = interval * polling_factor2;
 	else
 		thermal->polling_delay = interval * polling_factor1;
+
+	if ((int)*t >= 58000)
+	{
+	        aptemp_return_value = 1;
+		if (notify_flag == 0)
+		{
+			thermal_ccc_identify();
+			 notify_flag = 1;
+		}
+	}
+	else if ((int)*t > 50000)
+	{
+	       aptemp_return_value = 0;
+		if ((int)*t <= 55000 && notify_flag == 1)
+		{
+			thermal_ccc_identify();
+			 notify_flag = 0;
+		}
+	}
+	else
+	        aptemp_return_value = 0;
 
 	return 0;
 }

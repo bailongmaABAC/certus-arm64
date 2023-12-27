@@ -363,7 +363,7 @@ static void lcm_resume_power(void)
 	MDELAY(15);
 }
 
-#if 0
+
 static int cabc_status = 0;
 static void setCabcStatus(void)
 {
@@ -375,7 +375,7 @@ static void setCabcStatus(void)
 		}
 	}
 }
-#endif
+
 
 static void lcm_init(void)
 {
@@ -682,7 +682,7 @@ static void lcm_validate_roi(int *x, int *y, int *width, int *height)
 }
 #endif
 
-#if 0
+
 static struct LCM_setting_table cabc_level[] = {
 	{ 0xFF, 0x03, {0x98, 0x81, 0x00} },
 	{0x55, 0x01, {0x00} },
@@ -708,7 +708,7 @@ static void lcm_get_cabc_status(int *status)
 	*status = cabc_status;
 	pr_debug("in BOE panel driver , cabc get to %d\n", cabc_status);
 }
-#endif
+
 
 #if 0
 static void lcm_get_cabc_status(int *status)
@@ -755,7 +755,7 @@ struct LCM_DRIVER ili9881c_hdp_dsi_vdo_ilitek_rt5081_lcm_drv_boe = {
 	.validate_roi = lcm_validate_roi,
 #endif
 
-	//.set_cabc_cmdq = lcm_set_cabc_cmdq,
-	//.get_cabc_status = lcm_get_cabc_status,
+	.set_cabc_cmdq = lcm_set_cabc_cmdq,
+	.get_cabc_status = lcm_get_cabc_status,
 
 };
