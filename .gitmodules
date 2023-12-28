@@ -1,6 +1,0 @@
-[submodule "KernelSU"]
-	path = KernelSU
-	url = https://github.com/tiann/KernelSU
-[submodule "clang"]
-	path = clang
-	url = https://github.com/picasso09/clang-9.0.3-r353983c1
