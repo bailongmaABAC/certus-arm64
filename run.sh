@@ -1,5 +1,4 @@
-git submodule init
-git submodule update
+git clone https://github.com/picasso09/clang-9.0.3-r353983c1.git clang
 export KBUILD_BUILD_USER="RzaIX"
 export KBUILD_BUILD_HOST="picasso09"
 export PATH="$(pwd)/clang/bin:$PATH"
